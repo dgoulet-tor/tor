@@ -2951,6 +2951,58 @@ channel_flush_from_first_active_circuit, (channel_t *chan, int max))
   return n_flushed;
 }
 
+/* Minimum value is the maximum circuit window size times the maximum hops
+ * allowed on a circuit.
+ *
+ * SENDME cells makes it that we can control how many cells can be inflight on
+ * a circuit from end to end. This logic makes it that on any circuit cell
+ * queue, we have a maximum of cells possible.
+ *
+ * Because the Tor protocol allows for a client to exit at any hop in a
+ * circuit and a circuit can be of a maximum of 8 hops, the normal worst case
+ * will be the circuit window start value times the maximum number of hops.
+ * Having more cells then that means something is wrong.
+ *
+ * The maximum number of hops is bound to the number of RELAY_EARLY cells per
+ * circuit which is currently 8.
+ *
+ * XXX: Unfortunately, END cells aren't accounted for in the circuit window
+ * which means that if a client opens 8001 streams, the 8001 following END
+ * cells will queue up in the circuit which will get closed if the max limit
+ * is 8000. Which is sad because it is allowed by the Tor protocol. But, we
+ * need an upper bound on circuit queue in order to avoid DoS memory pressure
+ * so this is a middle ground between not having any and having a very
+ * restricted one. This is why we can also control it through a consensus
+ * parameter. */
+#define RELAY_CIRC_CELL_QUEUE_SIZE_MIN \
+  (CIRCWINDOW_START_MAX * MAX_RELAY_EARLY_CELLS_PER_CIRCUIT)
+/* We can't have a consensus parameter above this value. */
+#define RELAY_CIRC_CELL_QUEUE_SIZE_MAX INT32_MAX
+/* Default value is the minimum plus an extra circuit window to give us some
+ * room for errors. */
+#define RELAY_CIRC_CELL_QUEUE_SIZE_DEFAULT \
+  (RELAY_CIRC_CELL_QUEUE_SIZE_MIN + CIRCWINDOW_START_MAX)
+
+/* The maximum number of cell a circuit queue can contain. This is updated at
+ * every new consensus and controlled by a parameter. */
+static int32_t max_circuit_cell_queue_size;
+
+/* Called when the consensus has changed. At this stage, the global consensus
+ * object has NOT been updated. It is called from
+ * notify_before_networkstatus_changes(). */
+void
+relay_consensus_has_changed(const networkstatus_t *ns)
+{
+  tor_assert(ns);
+
+  /* Update the circuit max cell queue size from the consensus. */
+  max_circuit_cell_queue_size =
+    networkstatus_get_param(ns, "circ_max_cell_queue_size",
+                            RELAY_CIRC_CELL_QUEUE_SIZE_DEFAULT,
+                            RELAY_CIRC_CELL_QUEUE_SIZE_MIN,
+                            RELAY_CIRC_CELL_QUEUE_SIZE_MAX);
+}
+
 /** Add <b>cell</b> to the queue of <b>circ</b> writing to <b>chan</b>
  * transmitting in <b>direction</b>.
  *
@@ -2978,6 +3030,16 @@ append_cell_to_circuit_queue(circuit_t *circ, channel_t *chan,
     orcirc = TO_OR_CIRCUIT(circ);
     queue = &orcirc->p_chan_cells;
     streams_blocked = circ->streams_blocked_on_p_chan;
+  }
+
+  if (PREDICT_UNLIKELY(queue->n > max_circuit_cell_queue_size)) {
+    log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
+           "%s circuit has %d cell in its queue, maximum allowed is %d. "
+           "Closing circuit for safety reasons.",
+           (exitward) ? "Outbound" : "Inbound", queue->n,
+           max_circuit_cell_queue_size);
+    circuit_mark_for_close(circ, END_CIRC_REASON_RESOURCELIMIT);
+    return;
   }
 
   /* Very important that we copy to the circuit queue because all calls to
