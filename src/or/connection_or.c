@@ -1204,7 +1204,7 @@ or_connect_failure_ht_hash(const or_connect_failure_entry_t *entry)
   set_uint16(data + offset, entry->port);
   offset += sizeof(uint16_t);
 
-  return siphash24g(data, offset);
+  return (unsigned int) siphash24g(data, offset);
 }
 
 HT_PROTOTYPE(or_connect_failure_ht, or_connect_failure_entry_t, node,
