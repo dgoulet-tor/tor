@@ -2974,15 +2974,14 @@ channel_flush_from_first_active_circuit, (channel_t *chan, int max))
  * so this is a middle ground between not having any and having a very
  * restricted one. This is why we can also control it through a consensus
  * parameter. */
-#define RELAY_CIRC_CELL_QUEUE_SIZE_MIN \
-  (CIRCWINDOW_START_MAX * MAX_RELAY_EARLY_CELLS_PER_CIRCUIT)
+#define RELAY_CIRC_CELL_QUEUE_SIZE_MIN CIRCWINDOW_START_MAX
 /* We can't have a consensus parameter above this value. */
 #define RELAY_CIRC_CELL_QUEUE_SIZE_MAX INT32_MAX
 /* Default value is set to a large value so we can handle padding cells
  * properly which aren't accounted for in the SENDME window. Default is 50000
  * allowed cells in the queue resulting in ~25MB. */
 #define RELAY_CIRC_CELL_QUEUE_SIZE_DEFAULT \
-  (50 + CIRCWINDOW_START_MAX)
+  (50 + RELAY_CIRC_CELL_QUEUE_SIZE_MIN)
 
 /* The maximum number of cell a circuit queue can contain. This is updated at
  * every new consensus and controlled by a parameter. */
