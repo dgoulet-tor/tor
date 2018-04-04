@@ -3032,9 +3032,9 @@ append_cell_to_circuit_queue(circuit_t *circ, channel_t *chan,
     streams_blocked = circ->streams_blocked_on_p_chan;
   }
 
-  if (PREDICT_UNLIKELY(queue->n > max_circuit_cell_queue_size)) {
+  if (PREDICT_UNLIKELY(queue->n >= max_circuit_cell_queue_size)) {
     log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
-           "%s circuit has %d cell in its queue, maximum allowed is %d. "
+           "%s circuit has %d cells in its queue, maximum allowed is %d. "
            "Closing circuit for safety reasons.",
            (exitward) ? "Outbound" : "Inbound", queue->n,
            max_circuit_cell_queue_size);
