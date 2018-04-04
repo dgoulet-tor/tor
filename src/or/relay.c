@@ -2951,29 +2951,30 @@ channel_flush_from_first_active_circuit, (channel_t *chan, int max))
   return n_flushed;
 }
 
-/* Minimum value is the maximum circuit window size times the maximum hops
- * allowed on a circuit.
+/* Minimum value is the maximum circuit window size.
  *
  * SENDME cells makes it that we can control how many cells can be inflight on
  * a circuit from end to end. This logic makes it that on any circuit cell
  * queue, we have a maximum of cells possible.
  *
  * Because the Tor protocol allows for a client to exit at any hop in a
- * circuit and a circuit can be of a maximum of 8 hops, the normal worst case
- * will be the circuit window start value times the maximum number of hops.
- * Having more cells then that means something is wrong.
+ * circuit and a circuit can be of a maximum of 8 hops, so in theory the
+ * normal worst case will be the circuit window start value times the maximum
+ * number of hops (8). Having more cells then that means something is wrong.
  *
- * The maximum number of hops is bound to the number of RELAY_EARLY cells per
- * circuit which is currently 8.
+ * However, because padding cells aren't counted in the package window, we set
+ * the maximum size to a reasonably large size for which we expect that we'll
+ * never reach in theory. And if we ever do because of future changes, we'll
+ * be able to control it with a consensus parameter.
  *
  * XXX: Unfortunately, END cells aren't accounted for in the circuit window
- * which means that if a client opens 8001 streams, the 8001 following END
- * cells will queue up in the circuit which will get closed if the max limit
- * is 8000. Which is sad because it is allowed by the Tor protocol. But, we
- * need an upper bound on circuit queue in order to avoid DoS memory pressure
- * so this is a middle ground between not having any and having a very
- * restricted one. This is why we can also control it through a consensus
- * parameter. */
+ * which means that for instance if a client opens 8001 streams, the 8001
+ * following END cells will queue up in the circuit which will get closed if
+ * the max limit is 8000. Which is sad because it is allowed by the Tor
+ * protocol. But, we need an upper bound on circuit queue in order to avoid
+ * DoS memory pressure so the default size is a middle ground between not
+ * having any limit and having a very restricted one. This is why we can also
+ * control it through a consensus parameter. */
 #define RELAY_CIRC_CELL_QUEUE_SIZE_MIN CIRCWINDOW_START_MAX
 /* We can't have a consensus parameter above this value. */
 #define RELAY_CIRC_CELL_QUEUE_SIZE_MAX INT32_MAX
