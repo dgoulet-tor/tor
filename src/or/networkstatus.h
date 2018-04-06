@@ -14,6 +14,8 @@
 
 #include "testsupport.h"
 
+int any_client_port_set(const or_options_t *options);
+
 void networkstatus_reset_warnings(void);
 void networkstatus_reset_download_failures(void);
 char *networkstatus_read_cached_consensus(const char *flavorname);

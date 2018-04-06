@@ -1347,6 +1347,153 @@ CALLBACK(hs_service);
 /* Now we declare an array of periodic_event_item_t for each periodic event */
 #define CALLBACK(name) PERIODIC_EVENT(name)
 
+/* Client only periodic events. */
+static periodic_event_item_t periodic_events_client[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(clean_caches),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(rend_cache_failure_clean),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(write_stats_file),
+  END_OF_PERIODIC_EVENTS
+};
+
+#if 0
+/* Relay only periodic events. */
+static periodic_event_item_t periodic_events_relay[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_canonical_channels),
+  CALLBACK(check_descriptor),
+  CALLBACK(check_dns_honesty),
+  CALLBACK(check_ed_keys),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(check_for_reachability_bw),
+  CALLBACK(check_fw_helper_app),
+  CALLBACK(check_onion_keys_expiry_time),
+  CALLBACK(clean_caches),
+  CALLBACK(clean_consdiffmgr),
+  CALLBACK(expire_old_ciruits_serverside),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_dns),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_onion_key),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(write_stats_file),
+  END_OF_PERIODIC_EVENTS
+};
+
+/* Bridge only periodic events. */
+static periodic_event_item_t periodic_events_bridge[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_descriptor),
+  CALLBACK(check_ed_keys),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(check_for_reachability_bw),
+  CALLBACK(check_fw_helper_app),
+  CALLBACK(check_onion_keys_expiry_time),
+  CALLBACK(clean_caches),
+  CALLBACK(clean_consdiffmgr),
+  CALLBACK(expire_old_ciruits_serverside),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(record_bridge_stats),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_dns),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_onion_key),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(write_stats_file),
+  END_OF_PERIODIC_EVENTS
+};
+
+/* Directory Authority only periodic events. */
+static periodic_event_item_t periodic_events_dir_auth[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_authority_cert),
+  CALLBACK(check_canonical_channels),
+  CALLBACK(check_descriptor),
+  CALLBACK(check_dns_honesty),
+  CALLBACK(check_ed_keys),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(check_for_reachability_bw),
+  CALLBACK(check_fw_helper_app),
+  CALLBACK(check_onion_keys_expiry_time),
+  CALLBACK(clean_caches),
+  CALLBACK(clean_consdiffmgr),
+  CALLBACK(downrate_stability),
+  CALLBACK(expire_old_ciruits_serverside),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(launch_reachability_tests),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_dns),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_onion_key),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(save_stability),
+  CALLBACK(write_bridge_ns),
+  CALLBACK(write_stats_file),
+  END_OF_PERIODIC_EVENTS
+};
+
+/* Bridge Authority only periodic events. */
+static periodic_event_item_t periodic_events_bridge_auth[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_canonical_channels),
+  CALLBACK(check_descriptor),
+  CALLBACK(check_dns_honesty),
+  CALLBACK(check_ed_keys),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(check_for_reachability_bw),
+  CALLBACK(check_fw_helper_app),
+  CALLBACK(check_onion_keys_expiry_time),
+  CALLBACK(clean_caches),
+  CALLBACK(clean_consdiffmgr),
+  CALLBACK(downrate_stability),
+  CALLBACK(expire_old_ciruits_serverside),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(launch_reachability_tests),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_dns),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_onion_key),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(save_stability),
+  CALLBACK(write_bridge_ns),
+  CALLBACK(write_stats_file),
+  END_OF_PERIODIC_EVENTS
+};
+
+/* Hidden service only periodic events. */
+static periodic_event_item_t periodic_events_hs[] = {
+  CALLBACK(add_entropy),
+  CALLBACK(check_expired_networkstatus),
+  CALLBACK(clean_caches),
+  CALLBACK(fetch_networkstatus),
+  CALLBACK(heartbeat),
+  CALLBACK(launch_descriptor_fetches),
+  CALLBACK(rend_cache_failure_clean),
+  CALLBACK(reset_padding_counts),
+  CALLBACK(retry_listeners),
+  CALLBACK(rotate_x509_certificate),
+  CALLBACK(write_stats_file),
+  CALLBACK(hs_service),
+  END_OF_PERIODIC_EVENTS
+};
+#endif
+
 static periodic_event_item_t periodic_events[] = {
   CALLBACK(rotate_onion_key),
   CALLBACK(check_onion_keys_expiry_time),
@@ -1439,6 +1586,15 @@ initialize_periodic_events_cb(evutil_socket_t fd, short events, void *data)
   }
 }
 
+static void
+setup_periodic_events(periodic_event_item_t *events)
+{
+  tor_assert(events);
+  for (int i = 0; events[i].name; ++i) {
+    periodic_event_setup(&events[i]);
+  }
+}
+
 /** Set up all the members of periodic_events[], and configure them all to be
  * launched from a callback. */
 STATIC void
@@ -1446,9 +1602,20 @@ initialize_periodic_events(void)
 {
   tor_assert(periodic_events_initialized == 0);
   periodic_events_initialized = 1;
+  const or_options_t *options = get_options();
 
-  int i;
-  for (i = 0; periodic_events[i].name; ++i) {
+  /* Lets figure out what features do we need. */
+  int is_client = options->ClientOnly || any_client_port_set(options);
+  //int is_relay = public_server_mode(options);
+  //int is_bridge = options->BridgeRelay;
+  //int is_dirauth = authdir_mode_v3(options);
+  //int is_bridge_auth = authdir_mode_bridge(options);
+
+  if (is_client) {
+    launch_periodic_events(periodic_events_client);
+  }
+
+  for (int i = 0; periodic_events[i].name; ++i) {
     periodic_event_setup(&periodic_events[i]);
   }
 
