@@ -2751,7 +2751,7 @@ The following options are used to configure a hidden service.
 DENIAL OF SERVICE MITIGATION OPTIONS
 ------------------------------------
 
-Tor has 3 build-in mitigation options that can be individually
+Tor has three built-in mitigation options that can be individually
 enabled/disabled and fine-tuned, but by default Tor directory authorities will
 define reasonable values for relays and no explicit configuration is required
 to make use of these protections.  The mitigations are:
@@ -2776,6 +2776,12 @@ anything manually. In doubt, do not change those values.
 
 The values set by the consensus, if any, can be found here:
 https://consensus-health.torproject.org/#consensusparams
+
+If any of the DoS mitigations are enabled, an heartbeat message will appear in
+your log at NOTICE level which looks like:
+
+  DoS mitigation since startup: 429042 circuits rejected, 17 marked addresses.
+  2238 connections closed. 8052 single hop clients refused.
 
 The following options are useful only for a public relay. They control the
 Denial of Service mitigation subsystem described above.
