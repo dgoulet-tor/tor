@@ -22,7 +22,7 @@
  * expose more information than we're comfortable with. */
 #define MIN_HEARTBEAT_PERIOD (30*60)
 
-/** Maximum default value for MaxMemInQueues, in gigabytes. */
+/** Maximum default value for MaxMemInQueues, in bytes. */
 #if SIZEOF_VOID_P >= 8
 #define MAX_DEFAULT_MEMORY_QUEUE_SIZE (U64_LITERAL(8) << 30)
 #else
