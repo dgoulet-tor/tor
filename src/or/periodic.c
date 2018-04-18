@@ -43,7 +43,7 @@ periodic_event_dispatch(mainloop_event_t *ev, void *data)
   periodic_event_item_t *event = data;
   tor_assert(ev == event->ev);
 
-  if (BUG(!event->enabled)) {
+  if (BUG(!periodic_event_is_enabled(event))) {
     return;
   }
 
@@ -53,7 +53,7 @@ periodic_event_dispatch(mainloop_event_t *ev, void *data)
   int r = event->fn(now, options);
   int next_interval = 0;
 
-  if (! event->enabled) {
+  if (!periodic_event_is_enabled(event)) {
     /* The event got disabled from inside its callback; no need to
      * reschedule. */
     return;
