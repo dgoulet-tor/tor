@@ -2603,3 +2603,33 @@ hs_desc_lspec_to_trunnel(const hs_desc_link_specifier_t *spec)
   return ls;
 }
 
+/* Using the given encoded HS descriptor, remove the signature and return an
+ * newly allocated string containing the encoded descriptor without it. It is
+ * NUL terminated. The caller has to free the returned value.
+ *
+ * If the signature field is not found or if the size of the descriptor
+ * without the signature is 0, NULL is returned. */
+char *
+hs_desc_remove_sig(const char *encoded_desc)
+{
+  size_t len = 0;
+  char *desc_without_sig = NULL;
+  const char *start_of_desc, *end_of_desc;
+
+  tor_assert(encoded_desc);
+
+  start_of_desc = encoded_desc;
+  end_of_desc = strstr(encoded_desc, str_signature);
+  if (end_of_desc != NULL) {
+    len = end_of_desc - start_of_desc;
+    if (len > 0 && len < HS_DESC_MAX_LEN) {
+      /* Allocate the size and add extra byte for NUL char. This is why we
+       * don't compare the length to be equal to max length so we can safely
+       * add the extra NUL byte. */
+      desc_without_sig = tor_malloc_zero(len + 1);
+      memcpy(desc_without_sig, encoded_desc, len);
+    }
+  }
+  return desc_without_sig;
+}
+
