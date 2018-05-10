@@ -1406,7 +1406,6 @@ STATIC periodic_event_item_t periodic_events[] = {
            PERIODIC_EVENT_FLAG_NEED_NET),
   CALLBACK(reachability_warnings, PERIODIC_EVENT_ROLE_ROUTER,
            PERIODIC_EVENT_FLAG_NEED_NET),
-  CALLBACK(retry_dns, PERIODIC_EVENT_ROLE_ROUTER, 0),
   CALLBACK(rotate_onion_key, PERIODIC_EVENT_ROLE_ROUTER, 0),
 
   /* Authorities (bridge and directory) only. */
@@ -1421,8 +1420,6 @@ STATIC periodic_event_item_t periodic_events[] = {
 
   /* Relay only. */
   CALLBACK(check_canonical_channels, PERIODIC_EVENT_ROLE_RELAY,
-           PERIODIC_EVENT_FLAG_NEED_NET),
-  CALLBACK(check_dns_honesty, PERIODIC_EVENT_ROLE_RELAY,
            PERIODIC_EVENT_FLAG_NEED_NET),
 
   /* Hidden Service service only. */
@@ -1440,6 +1437,11 @@ STATIC periodic_event_item_t periodic_events[] = {
 
   /* Directory server only. */
   CALLBACK(clean_consdiffmgr, PERIODIC_EVENT_ROLE_DIRSERVER, 0),
+
+  /* Exit only. */
+  CALLBACK(retry_dns, PERIODIC_EVENT_ROLE_EXIT, 0),
+  CALLBACK(check_dns_honesty, PERIODIC_EVENT_ROLE_EXIT,
+           PERIODIC_EVENT_FLAG_NEED_NET),
 
   END_OF_PERIODIC_EVENTS
 };
@@ -1500,6 +1502,8 @@ get_my_roles(const or_options_t *options)
   int is_hidden_service = !!hs_service_get_num_services() ||
                           !!rend_num_services();
   int is_dirserver = dir_server_mode(options);
+  int is_exit = public_server_mode(options) &&
+                !router_my_exit_policy_is_reject_star();
 
   if (is_bridge) roles |= PERIODIC_EVENT_ROLE_BRIDGE;
   if (is_client) roles |= PERIODIC_EVENT_ROLE_CLIENT;
@@ -1508,6 +1512,7 @@ get_my_roles(const or_options_t *options)
   if (is_bridgeauth) roles |= PERIODIC_EVENT_ROLE_BRIDGEAUTH;
   if (is_hidden_service) roles |= PERIODIC_EVENT_ROLE_HS_SERVICE;
   if (is_dirserver) roles |= PERIODIC_EVENT_ROLE_DIRSERVER;
+  if (is_exit) roles |= PERIODIC_EVENT_ROLE_EXIT;
 
   return roles;
 }
