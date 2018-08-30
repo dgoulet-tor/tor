@@ -1508,7 +1508,7 @@ parse_auth_file_content(const char *client_key_str)
                     seckey_b32, strlen(seckey_b32)) < 0) {
     goto err;
   }
-  memcpy(auth->onion_address, onion_address, HS_SERVICE_ADDR_LEN_BASE32+1);
+  strncpy(auth->onion_address, onion_address, HS_SERVICE_ADDR_LEN_BASE32);
 
   /* Success. */
   goto done;
