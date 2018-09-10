@@ -3092,7 +3092,7 @@ handle_response_fetch_hsdesc_v3(dir_connection_t *conn,
   case 200:
     /* We got something: Try storing it in the cache. */
     if (hs_cache_store_as_client(body, &conn->hs_ident->identity_pk) < 0) {
-      log_warn(LD_REND, "Failed to store hidden service descriptor");
+      log_info(LD_REND, "Failed to store hidden service descriptor");
     } else {
       log_info(LD_REND, "Stored hidden service descriptor successfully.");
       TO_CONN(conn)->purpose = DIR_PURPOSE_HAS_FETCHED_HSDESC;
