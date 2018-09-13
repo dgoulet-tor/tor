@@ -1088,7 +1088,7 @@ The following options are useful only for clients (that is, if
     **HiddenServiceAuthorizeClient** option.
 
 [[ClientOnionAuthDir]] **ClientOnionAuthDir** __path__::
-    Path to the directory containing the hidden service authoriation file. The
+    Path to the directory containing the hidden service authorization file. The
     files MUST have the suffix ".auth_private". Each file is for a single
     onion address and their format is:
  +
@@ -2909,7 +2909,9 @@ The following options are used to configure a hidden service.
 Client Authorization
 --------------------
 
-To configure client authorition on the service side, the
+(Version 3 only)
+
+To configure client authorization on the service side, the
 "<HiddenServiceDir>/authorized_clients/" needs to exists. Each file in that
 directory should be suffixed with ".auth" (the file name is irrelevant) and
 its content format MUST be:
