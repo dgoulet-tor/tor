@@ -1073,8 +1073,10 @@ typedef struct rend_service_descriptor_t rend_service_descriptor_t;
 
 typedef struct dir_server_t dir_server_t;
 
-#define RELAY_REQUIRED_MIN_BANDWIDTH (75*1024)
-#define BRIDGE_REQUIRED_MIN_BANDWIDTH (50*1024)
+/* Minimum of 8MBit/s (Mbps) is 1000KB/sec. */
+#define RELAY_REQUIRED_MIN_BANDWIDTH (1000*1024)
+/* Minimum of 1MBit/s (Mbps) is 125KB/sec. */
+#define BRIDGE_REQUIRED_MIN_BANDWIDTH (125*1024)
 
 #define ROUTER_MAX_DECLARED_BANDWIDTH INT32_MAX
 

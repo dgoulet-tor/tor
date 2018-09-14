@@ -194,13 +194,12 @@ GENERAL OPTIONS
 ---------------
 
 [[BandwidthRate]] **BandwidthRate** __N__ **bytes**|**KBytes**|**MBytes**|**GBytes**|**TBytes**|**KBits**|**MBits**|**GBits**|**TBits**::
-    A token bucket limits the average incoming bandwidth usage on this node
-    to the specified number of bytes per second, and the average outgoing
-    bandwidth usage to that same value.  If you want to run a relay in the
-    public network, this needs to be _at the very least_ 75 KBytes for a
-    relay (that is, 600 kbits) or 50 KBytes for a bridge (400 kbits) -- but of
-    course, more is better; we recommend at least 250 KBytes (2 mbits) if
-    possible.  (Default: 1 GByte) +
+    A token bucket limits the average incoming bandwidth usage on this node to
+    the specified number of bytes per second, and the average outgoing
+    bandwidth usage to that same value. If you want to run a relay in the
+    public network, this needs to be at the very least 8 MBit/s (Mbps) for a
+    relay or 1 MBit/s for a bridge  but of course, more is better; we
+    recommend at least 16 MBit/s if possible.  (Default: 1 GByte) +
  +
     Note that this option, and other bandwidth-limiting options, apply to TCP
     data only: They do not count TCP headers or DNS traffic. +

@@ -2324,41 +2324,41 @@ test_options_validate__bandwidth(void *ignored)
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "BandwidthRate is set to 1 bytes/second. For servers,"
-            " it must be at least 76800.");
+            " it must be at least 1024000.");
   tor_free(msg);
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(TEST_OPTIONS_DEFAULT_VALUES
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 76800\n"
+                                "BandwidthRate 1024000\n"
                                 "MaxAdvertisedBandwidth 30000\n"
                                 );
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "MaxAdvertisedBandwidth is set to 30000 bytes/second."
-            " For servers, it must be at least 38400.");
+            " For servers, it must be at least 512000.");
   tor_free(msg);
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(TEST_OPTIONS_DEFAULT_VALUES
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 76800\n"
+                                "BandwidthRate 1024000\n"
                                 "RelayBandwidthRate 1\n"
-                                "MaxAdvertisedBandwidth 38400\n"
+                                "MaxAdvertisedBandwidth 512000\n"
                                 );
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);
   tt_int_op(ret, OP_EQ, -1);
   tt_str_op(msg, OP_EQ, "RelayBandwidthRate is set to 1 bytes/second. For "
-            "servers, it must be at least 76800.");
+            "servers, it must be at least 1024000.");
   tor_free(msg);
 
   free_options_test_data(tdata);
   tdata = get_options_test_data(TEST_OPTIONS_DEFAULT_VALUES
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 76800\n"
-                                "BandwidthBurst 76800\n"
-                                "RelayBandwidthRate 76800\n"
-                                "MaxAdvertisedBandwidth 38400\n"
+                                "BandwidthRate 1024000\n"
+                                "BandwidthBurst 1024000\n"
+                                "RelayBandwidthRate 1024000\n"
+                                "MaxAdvertisedBandwidth 512000\n"
                                 );
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);
   tt_int_op(ret, OP_EQ, 0);
@@ -2715,9 +2715,9 @@ test_options_validate__accounting(void *ignored)
   tdata = get_options_test_data(
            TEST_OPTIONS_DEFAULT_VALUES
            "ORPort 127.0.0.1:5555\n"
-           "BandwidthRate 76800\n"
-           "BandwidthBurst 76800\n"
-           "MaxAdvertisedBandwidth 38400\n"
+           "BandwidthRate 1024000\n"
+           "BandwidthBurst 1024000\n"
+           "MaxAdvertisedBandwidth 512000\n"
            "HiddenServiceDir /Library/Tor/var/lib/tor/hidden_service/\n"
            "HiddenServicePort 80 127.0.0.1:8080\n"
            "AccountingMax 10\n"
@@ -3349,9 +3349,9 @@ test_options_validate__families(void *ignored)
                                 "MyFamily home\n"
                                 "BridgeRelay 1\n"
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 51300\n"
-                                "BandwidthBurst 51300\n"
-                                "MaxAdvertisedBandwidth 25700\n"
+                                "BandwidthRate 1024000\n"
+                                "BandwidthBurst 1024000\n"
+                                "MaxAdvertisedBandwidth 512000\n"
                                 "DirCache 1\n"
                                 );
   mock_clean_saved_logs();
@@ -3578,9 +3578,9 @@ test_options_validate__transport(void *ignored)
   tdata = get_options_test_data(TEST_OPTIONS_DEFAULT_VALUES
                                 "ServerTransportPlugin foo exec bar\n"
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 76900\n"
-                                "BandwidthBurst 76900\n"
-                                "MaxAdvertisedBandwidth 38500\n"
+                                "BandwidthRate 1024000\n"
+                                "BandwidthBurst 1024000\n"
+                                "MaxAdvertisedBandwidth 512000\n"
                                 );
   mock_clean_saved_logs();
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);
@@ -3620,9 +3620,9 @@ test_options_validate__transport(void *ignored)
                                 "ServerTransportListenAddr foo 127.0.0.42:55\n"
                                 "ServerTransportPlugin foo exec bar\n"
                                 "ORPort 127.0.0.1:5555\n"
-                                "BandwidthRate 76900\n"
-                                "BandwidthBurst 76900\n"
-                                "MaxAdvertisedBandwidth 38500\n"
+                                "BandwidthRate 1024000\n"
+                                "BandwidthBurst 1024000\n"
+                                "MaxAdvertisedBandwidth 512000\n"
                                 );
   mock_clean_saved_logs();
   ret = options_validate(tdata->old_opt, tdata->opt, tdata->def_opt, 0, &msg);

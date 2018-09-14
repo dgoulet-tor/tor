@@ -1,0 +1,4 @@
+  o Major feature (relay, bridge):
+    - Raise the minimum bandwidth requirements for relays and bridges. For
+      relays, we go from 600KBits/s to 8MBits/s. For bridges, we go from
+      400KBits/s to 1MBits/s. Close ticket 26094.
