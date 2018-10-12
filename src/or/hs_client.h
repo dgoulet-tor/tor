@@ -64,6 +64,7 @@ extend_info_t *hs_client_get_random_intro_from_edge(
                                           const edge_connection_t *edge_conn);
 
 int hs_client_reextend_intro_circuit(origin_circuit_t *circ);
+void hs_client_close_intro_circuits_from_desc(const hs_descriptor_t *desc);
 
 void hs_client_purge_state(void);
 
