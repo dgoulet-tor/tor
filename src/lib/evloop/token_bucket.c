@@ -202,13 +202,20 @@ token_bucket_rw_refill(token_bucket_rw_t *bucket,
     return 0;
   }
 
+  const int32_t was_read_bucket = bucket->read_bucket.bucket;
+  const int32_t was_write_bucket = bucket->write_bucket.bucket;
+
   int flags = 0;
   if (token_bucket_raw_refill_steps(&bucket->read_bucket,
                                     &bucket->cfg, elapsed_steps))
     flags |= TB_READ;
+  log_debug(LD_NET, "Refilling bucket. Read was %" PRIi32 ", now: %" PRIi32,
+            was_read_bucket, bucket->read_bucket.bucket);
   if (token_bucket_raw_refill_steps(&bucket->write_bucket,
                                     &bucket->cfg, elapsed_steps))
     flags |= TB_WRITE;
+  log_debug(LD_NET, "Refilling bucket. Read was %" PRIi32 ", now: %" PRIi32,
+            was_write_bucket, bucket->write_bucket.bucket);
 
   bucket->last_refilled_at_timestamp = now_ts;
   return flags;

@@ -3420,6 +3420,9 @@ connection_bucket_refill_single(connection_t *conn, uint32_t now_ts)
    * token bucket functions can handle moving backwards in time if they
    * need to. */
   if (now_ts != last_refilled_global_buckets_ts) {
+    log_debug(LD_NET,
+              "Global bucket and relayed bucket being refilled: %" PRIu32,
+              now_ts);
     token_bucket_rw_refill(&global_bucket, now_ts);
     token_bucket_rw_refill(&global_relayed_bucket, now_ts);
     last_refilled_global_buckets_ts = now_ts;
@@ -3427,6 +3430,8 @@ connection_bucket_refill_single(connection_t *conn, uint32_t now_ts)
 
   if (connection_speaks_cells(conn) && conn->state == OR_CONN_STATE_OPEN) {
     or_connection_t *or_conn = TO_OR_CONN(conn);
+    log_debug(LD_NET, "Refilling bucket for connection %s:%d at %" PRIu32,
+              conn->address, conn->port, now_ts);
     token_bucket_rw_refill(&or_conn->bucket, now_ts);
   }
 }
@@ -3657,6 +3662,7 @@ connection_buf_read_from_socket(connection_t *conn, ssize_t *max_to_read,
   if (at_most == -1) { /* we need to initialize it */
     /* how many bytes are we allowed to read? */
     at_most = connection_bucket_read_limit(conn, approx_time());
+    log_debug(LD_NET, "Connection allowed to read: %ld", at_most);
   }
 
   slack_in_buf = buf_slack(conn->inbuf);
@@ -3995,6 +4001,7 @@ connection_handle_write_impl(connection_t *conn, int force)
 
   max_to_write = force ? (ssize_t)conn->outbuf_flushlen
     : connection_bucket_write_limit(conn, now);
+  log_debug(LD_NET, "Connection allowed to write: %ld", max_to_write);
 
   if (connection_speaks_cells(conn) &&
       conn->state > OR_CONN_STATE_PROXY_HANDSHAKING) {
