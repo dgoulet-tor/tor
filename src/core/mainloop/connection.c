@@ -24,6 +24,7 @@
  *      <ul><li>entry_connection_t, also implemented in connection_edge.c
  *      </ul>
  *   <li>control_connection_t, implemented in control.c
+ *   <li>stats_reporter_connection_t, implemented in FIXME(ahf).</li>
  *  </ul>
  *
  * The base type implemented in this module is responsible for basic
@@ -102,6 +103,7 @@
 #include "feature/rend/rendclient.h"
 #include "feature/rend/rendcommon.h"
 #include "feature/stats/rephist.h"
+#include "feature/stats/stats_reporter.h"
 #include "lib/crypt_ops/crypto_util.h"
 #include "lib/geoip/geoip.h"
 
@@ -258,6 +260,7 @@ conn_type_to_string(int type)
     case CONN_TYPE_EXT_OR: return "Extended OR";
     case CONN_TYPE_EXT_OR_LISTENER: return "Extended OR listener";
     case CONN_TYPE_AP_HTTP_CONNECT_LISTENER: return "HTTP tunnel listener";
+    case CONN_TYPE_STATS_REPORTER: return "Stats reporter";
     default:
       log_warn(LD_BUG, "unknown connection type %d", type);
       tor_snprintf(buf, sizeof(buf), "unknown [%d]", type);
@@ -441,6 +444,18 @@ listener_connection_new(int type, int socket_family)
   return listener_conn;
 }
 
+/** Allocate and return a new stats_reporter_connection_t, initialized as by
+ * connection_init(). */
+stats_reporter_connection_t *
+stats_reporter_connection_new(int socket_family)
+{
+  stats_reporter_connection_t *stats_reporter_conn =
+    tor_malloc_zero(sizeof(stats_reporter_connection_t));
+  connection_init(time(NULL), TO_CONN(stats_reporter_conn),
+                  CONN_TYPE_STATS_REPORTER, socket_family);
+  return stats_reporter_conn;
+}
+
 /** Allocate, initialize, and return a new connection_t subtype of <b>type</b>
  * to make or receive connections of address family <b>socket_family</b>.  The
  * type should be one of the CONN_TYPE_* constants. */
@@ -506,6 +521,9 @@ connection_init(time_t now, connection_t *conn, int type, int socket_family)
       break;
     case CONN_TYPE_CONTROL:
       conn->magic = CONTROL_CONNECTION_MAGIC;
+      break;
+    case CONN_TYPE_STATS_REPORTER:
+      conn->magic = STATS_REPORTER_CONNECTION_MAGIC;
       break;
     CASE_ANY_LISTENER_TYPE:
       conn->magic = LISTENER_CONNECTION_MAGIC;
@@ -599,6 +617,11 @@ connection_free_minimal(connection_t *conn)
       tor_assert(conn->magic == CONTROL_CONNECTION_MAGIC);
       mem = TO_CONTROL_CONN(conn);
       memlen = sizeof(control_connection_t);
+      break;
+    case CONN_TYPE_STATS_REPORTER:
+      tor_assert(conn->magic == STATS_REPORTER_CONNECTION_MAGIC);
+      mem = TO_STATS_REPORTER_CONN(conn);
+      memlen = sizeof(stats_reporter_connection_t);
       break;
     CASE_ANY_LISTENER_TYPE:
       tor_assert(conn->magic == LISTENER_CONNECTION_MAGIC);
@@ -4741,6 +4764,9 @@ connection_process_inbuf(connection_t *conn, int package_partial)
       return connection_dir_process_inbuf(TO_DIR_CONN(conn));
     case CONN_TYPE_CONTROL:
       return connection_control_process_inbuf(TO_CONTROL_CONN(conn));
+    case CONN_TYPE_STATS_REPORTER:
+      return connection_stats_reporter_process_inbuf(
+               TO_STATS_REPORTER_CONN(conn));
     default:
       log_err(LD_BUG,"got unexpected conn type %d.", conn->type);
       tor_fragile_assert();
@@ -4799,6 +4825,9 @@ connection_finished_flushing(connection_t *conn)
       return connection_dir_finished_flushing(TO_DIR_CONN(conn));
     case CONN_TYPE_CONTROL:
       return connection_control_finished_flushing(TO_CONTROL_CONN(conn));
+    case CONN_TYPE_STATS_REPORTER:
+      return connection_stats_reporter_finished_flushing(
+               TO_STATS_REPORTER_CONN(conn));
     default:
       log_err(LD_BUG,"got unexpected conn type %d.", conn->type);
       tor_fragile_assert();
@@ -4854,6 +4883,9 @@ connection_reached_eof(connection_t *conn)
       return connection_dir_reached_eof(TO_DIR_CONN(conn));
     case CONN_TYPE_CONTROL:
       return connection_control_reached_eof(TO_CONTROL_CONN(conn));
+    case CONN_TYPE_STATS_REPORTER:
+      return connection_stats_reporter_reached_eof(
+               TO_STATS_REPORTER_CONN(conn));
     default:
       log_err(LD_BUG,"got unexpected conn type %d.", conn->type);
       tor_fragile_assert();
@@ -5200,6 +5232,9 @@ assert_connection_ok(connection_t *conn, time_t now)
     case CONN_TYPE_CONTROL:
       tor_assert(conn->magic == CONTROL_CONNECTION_MAGIC);
       break;
+    case CONN_TYPE_STATS_REPORTER:
+      tor_assert(conn->magic == STATS_REPORTER_CONNECTION_MAGIC);
+      break;
     CASE_ANY_LISTENER_TYPE:
       tor_assert(conn->magic == LISTENER_CONNECTION_MAGIC);
       break;
@@ -5315,6 +5350,9 @@ assert_connection_ok(connection_t *conn, time_t now)
     case CONN_TYPE_CONTROL:
       tor_assert(conn->state >= CONTROL_CONN_STATE_MIN_);
       tor_assert(conn->state <= CONTROL_CONN_STATE_MAX_);
+      break;
+    case CONN_TYPE_STATS_REPORTER:
+      // FIXME(ahf): ...
       break;
     default:
       tor_assert(0);

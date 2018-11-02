@@ -725,6 +725,7 @@ typedef struct edge_connection_t edge_connection_t;
 typedef struct entry_connection_t entry_connection_t;
 typedef struct listener_connection_t listener_connection_t;
 typedef struct or_connection_t or_connection_t;
+typedef struct stats_reporter_connection_t stats_reporter_connection_t;
 
 /** Cast a connection_t subtype pointer to a connection_t **/
 #define TO_CONN(c) (&(((c)->base_)))

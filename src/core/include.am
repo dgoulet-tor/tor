@@ -128,6 +128,7 @@ LIBTOR_APP_A_SOURCES = 				\
 	src/feature/rend/rendservice.c		\
 	src/feature/stats/geoip_stats.c		\
 	src/feature/stats/rephist.c		\
+  src/feature/stats/stats_reporter.c		\
 	src/feature/stats/predict_ports.c
 
 # These should eventually move into module_dirauth_sources, but for now

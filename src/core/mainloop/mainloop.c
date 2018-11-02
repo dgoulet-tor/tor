@@ -95,6 +95,7 @@
 #include "feature/stats/geoip_stats.h"
 #include "feature/stats/predict_ports.h"
 #include "feature/stats/rephist.h"
+#include "feature/stats/stats_reporter.h"
 #include "lib/container/buffers.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/err/backtrace.h"
@@ -1353,6 +1354,7 @@ CALLBACK(clean_caches);
 CALLBACK(clean_consdiffmgr);
 CALLBACK(dirvote);
 CALLBACK(downrate_stability);
+CALLBACK(emit_stats_reporter_events);
 CALLBACK(expire_old_ciruits_serverside);
 CALLBACK(fetch_networkstatus);
 CALLBACK(heartbeat);
@@ -1393,6 +1395,7 @@ STATIC periodic_event_item_t periodic_events[] = {
   CALLBACK(save_state, PERIODIC_EVENT_ROLE_ALL, 0),
   CALLBACK(rotate_x509_certificate, PERIODIC_EVENT_ROLE_ALL, 0),
   CALLBACK(write_stats_file, PERIODIC_EVENT_ROLE_ALL, 0),
+  CALLBACK(emit_stats_reporter_events, PERIODIC_EVENT_ROLE_ALL, 0),
 
   /* Routers (bridge and relay) only. */
   CALLBACK(check_descriptor, PERIODIC_EVENT_ROLE_ROUTER,
@@ -2498,6 +2501,17 @@ hs_service_callback(time_t now, const or_options_t *options)
  end:
   /* Every 1 second. */
   return 1;
+}
+
+/**
+ * Periodic callback: Emit stats reporter events.  This is called every
+ * StatsReporterGranularity seconds.
+ */
+static int
+emit_stats_reporter_events_callback(time_t now, const or_options_t *options)
+{
+  stats_reporter_emit_events(now);
+  return options->StatsReporterGranularity;
 }
 
 /** Timer: used to invoke second_elapsed_callback() once per second. */
