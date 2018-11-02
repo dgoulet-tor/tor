@@ -60,6 +60,7 @@ TOR_UTIL_LIBS = \
 	src/lib/libtor-term.a \
 	src/lib/libtor-smartlist-core.a \
 	src/lib/libtor-malloc.a \
+	src/lib/libtor-stats.a \
 	src/lib/libtor-wallclock.a \
 	src/lib/libtor-err.a \
 	src/lib/libtor-intmath.a \
@@ -89,6 +90,7 @@ TOR_UTIL_TESTING_LIBS = \
 	src/lib/libtor-string-testing.a \
 	src/lib/libtor-smartlist-core-testing.a \
 	src/lib/libtor-malloc-testing.a \
+	src/lib/libtor-stats-testing.a \
 	src/lib/libtor-wallclock-testing.a \
 	src/lib/libtor-err-testing.a \
 	src/lib/libtor-intmath.a \

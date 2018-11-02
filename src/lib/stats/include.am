@@ -1,0 +1,19 @@
+
+noinst_LIBRARIES += src/lib/libtor-stats.a
+
+if UNITTESTS_ENABLED
+noinst_LIBRARIES += src/lib/libtor-stats-testing.a
+endif
+
+src_lib_libtor_stats_a_SOURCES =	\
+	src/lib/stats/stats_entry.c			\
+	src/lib/stats/stats_store.c
+
+src_lib_libtor_stats_testing_a_SOURCES = \
+	$(src_lib_libtor_stats_a_SOURCES)
+src_lib_libtor_stats_testing_a_CPPFLAGS = $(AM_CPPFLAGS) $(TEST_CPPFLAGS)
+src_lib_libtor_stats_testing_a_CFLAGS = $(AM_CFLAGS) $(TEST_CFLAGS)
+
+noinst_HEADERS +=			\
+	src/lib/stats/stats_entry.h			\
+	src/lib/stats/stats_store.h
