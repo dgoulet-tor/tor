@@ -105,10 +105,14 @@ stats_store_key_string(stats_store_key_t key)
     return PREFIX("network.connection.read");
   case STAT_MAIN_LOOP_SUCCESS:
     return PREFIX("internal.mainloop.successful");
+  case STAT_DOS_REJECTED_ADDRS:
+    return PREFIX("dos.rejected_addrs");
   case STAT_DOS_REJECTED_CELLS:
     return PREFIX("dos.rejected_cells");
   case STAT_DOS_MARKED_ADDRESSES:
     return PREFIX("dos.marked_addresses");
+  case STAT_DOS_REFUSED_SINGLE_HOP:
+    return PREFIX("dos.refused_single_hop");
   case STAT_COMMAND_CREATE_CELLS_PROCESSED:
     return PREFIX("command.cells.processed.create");
   case STAT_COMMAND_CREATED_CELLS_PROCESSED:
