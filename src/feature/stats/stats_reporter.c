@@ -240,6 +240,7 @@ stats_reporter_graphite_tags(void)
   static char buf[256];
   int written = 0;
 
+#if 0
   /* Add version tag. */
   tor_snprintf(buf + written, sizeof(buf) - written,  ";tor_version=%s",
                VERSION);
@@ -251,6 +252,7 @@ stats_reporter_graphite_tags(void)
                  tor_git_revision);
     written = strlen(buf);
   }
+#endif
 
   /* Add nickname, if it's available. */
   if (options->Nickname) {
