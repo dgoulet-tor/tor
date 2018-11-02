@@ -19,6 +19,7 @@
 #include "lib/malloc/malloc.h"
 #include "lib/cc/torint.h"
 #include "lib/err/torerr.h"
+#include "lib/stats/stats_store.h"
 
 #ifdef __clang_analyzer__
 #undef MALLOC_ZERO_WORKS
@@ -52,6 +53,10 @@ tor_malloc_(size_t size)
     raw_assert_unreached_msg("Out of memory on malloc(). Dying.");
     /* LCOV_EXCL_STOP */
   }
+
+  stats_store_update(STAT_MALLOC_BYTES, size);
+  stats_store_update(STAT_MALLOC_COUNT, 1);
+
   return result;
 }
 
