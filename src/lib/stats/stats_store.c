@@ -35,6 +35,7 @@ stats_store_init(void)
   entries[STAT_MAIN_LOOP_SUCCESS] = stats_entry_new_counter();
 
   /* src/or/dos.c stats. */
+  entries[STAT_DOS_REJECTED_ADDRS] = stats_entry_new_counter();
   entries[STAT_DOS_REJECTED_CELLS] = stats_entry_new_counter();
   entries[STAT_DOS_MARKED_ADDRESSES] = stats_entry_new_counter();
 
@@ -110,6 +111,8 @@ stats_store_key_string(stats_store_key_t key)
     return PREFIX("network.connection.read");
   case STAT_MAIN_LOOP_SUCCESS:
     return PREFIX("internal.mainloop.successful");
+  case STAT_DOS_REJECTED_ADDRS:
+    return PREFIX("dos.rejected_addrs");
   case STAT_DOS_REJECTED_CELLS:
     return PREFIX("dos.rejected_cells");
   case STAT_DOS_MARKED_ADDRESSES:

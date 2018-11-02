@@ -40,6 +40,9 @@ typedef enum {
   /** DoS subsystem: Number of marked addresses. */
   STAT_DOS_MARKED_ADDRESSES,
 
+  /** DoS subsystem: Rejected address connections. */
+  STAT_DOS_REJECTED_ADDRS,
+
   /** Command: CREATE cells. */
   STAT_COMMAND_CREATE_CELLS_PROCESSED,
 
