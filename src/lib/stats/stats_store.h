@@ -55,6 +55,12 @@ typedef enum {
   /** Command: DESTROY cells. */
   STAT_COMMAND_DESTROY_CELLS_PROCESSED,
 
+  /** Onion Handshake: ntor. */
+  STAT_HANDSHAKE_NTOR,
+
+  /** Onion Handshake: tap. */
+  STAT_HANDSHAKE_TAP,
+
   /** Last element, make sure this is always the last element of stat_key_t. */
   STAT_LAST
 } stats_store_key_t;

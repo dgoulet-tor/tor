@@ -44,6 +44,10 @@ stats_store_init(void)
   entries[STAT_COMMAND_CREATED_CELLS_PROCESSED] = stats_entry_new_counter();
   entries[STAT_COMMAND_RELAY_CELLS_PROCESSED] = stats_entry_new_counter();
   entries[STAT_COMMAND_DESTROY_CELLS_PROCESSED] = stats_entry_new_counter();
+
+  /* onionskin.c */
+  entries[STAT_HANDSHAKE_NTOR] = stats_entry_new_counter();
+  entries[STAT_HANDSHAKE_TAP] = stats_entry_new_counter();
 }
 
 void
@@ -125,6 +129,10 @@ stats_store_key_string(stats_store_key_t key)
     return PREFIX("command.cells.processed.relay");
   case STAT_COMMAND_DESTROY_CELLS_PROCESSED:
     return PREFIX("command.cells.processed.destroy");
+  case STAT_HANDSHAKE_NTOR:
+    return PREFIX("handshake.ntor");
+  case STAT_HANDSHAKE_TAP:
+    return PREFIX("handshake.tap");
 
   /* Fall through. */
   case STAT_LAST:
