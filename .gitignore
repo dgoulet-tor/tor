@@ -197,6 +197,8 @@ uptime-*.json
 /src/lib/libtor-process-testing.a
 /src/lib/libtor-sandbox.a
 /src/lib/libtor-sandbox-testing.a
+/src/lib/libtor-stats-testing.a
+/src/lib/libtor-stats.a
 /src/lib/libtor-string.a
 /src/lib/libtor-string-testing.a
 /src/lib/libtor-smartlist-core.a

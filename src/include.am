@@ -24,6 +24,7 @@ include src/lib/net/include.am
 include src/lib/osinfo/include.am
 include src/lib/process/include.am
 include src/lib/sandbox/include.am
+include src/lib/stats/include.am
 include src/lib/string/include.am
 include src/lib/smartlist_core/include.am
 include src/lib/term/include.am
