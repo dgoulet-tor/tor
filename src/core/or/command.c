@@ -57,6 +57,7 @@
 #include "feature/relay/routermode.h"
 #include "feature/stats/rephist.h"
 #include "lib/crypt_ops/crypto_util.h"
+#include "lib/stats/stats_store.h"
 
 #include "core/or/cell_st.h"
 #include "core/or/or_circuit_st.h"
@@ -190,21 +191,25 @@ command_process_cell(channel_t *chan, cell_t *cell)
     case CELL_CREATE:
     case CELL_CREATE_FAST:
     case CELL_CREATE2:
+      stats_store_update(STAT_COMMAND_CREATE_CELLS_PROCESSED, 1);
       ++stats_n_create_cells_processed;
       PROCESS_CELL(create, cell, chan);
       break;
     case CELL_CREATED:
     case CELL_CREATED_FAST:
     case CELL_CREATED2:
+      stats_store_update(STAT_COMMAND_CREATED_CELLS_PROCESSED, 1);
       ++stats_n_created_cells_processed;
       PROCESS_CELL(created, cell, chan);
       break;
     case CELL_RELAY:
     case CELL_RELAY_EARLY:
+      stats_store_update(STAT_COMMAND_RELAY_CELLS_PROCESSED, 1);
       ++stats_n_relay_cells_processed;
       PROCESS_CELL(relay, cell, chan);
       break;
     case CELL_DESTROY:
+      stats_store_update(STAT_COMMAND_DESTROY_CELLS_PROCESSED, 1);
       ++stats_n_destroy_cells_processed;
       PROCESS_CELL(destroy, cell, chan);
       break;
