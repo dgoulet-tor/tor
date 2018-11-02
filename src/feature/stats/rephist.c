@@ -89,6 +89,7 @@
 #include "lib/container/order.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/math/laplace.h"
+#include "lib/stats/stats_store.h"
 
 #include "feature/nodelist/networkstatus_st.h"
 #include "core/or/or_circuit_st.h"
@@ -2451,8 +2452,15 @@ rep_hist_note_circuit_handshake_requested(uint16_t type)
 void
 rep_hist_note_circuit_handshake_assigned(uint16_t type)
 {
-  if (type <= MAX_ONION_HANDSHAKE_TYPE)
+  if (type <= MAX_ONION_HANDSHAKE_TYPE) {
     onion_handshakes_assigned[type]++;
+  }
+  if (type == ONION_HANDSHAKE_TYPE_TAP) {
+    stats_store_update(STAT_HANDSHAKE_TAP, 1);
+  }
+  if (type == ONION_HANDSHAKE_TYPE_NTOR) {
+    stats_store_update(STAT_HANDSHAKE_NTOR, 1);
+  }
 }
 
 /** Log our onionskin statistics since the last time we were called. */
