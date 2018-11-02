@@ -53,8 +53,10 @@ struct buf_t;
 #define CONN_TYPE_EXT_OR_LISTENER 17
 /** Type for sockets listening for HTTP CONNECT tunnel connections. */
 #define CONN_TYPE_AP_HTTP_CONNECT_LISTENER 18
+/** Type for connections to a stats reporting service. */
+#define CONN_TYPE_STATS_REPORTER 19
 
-#define CONN_TYPE_MAX_ 19
+#define CONN_TYPE_MAX_ 20
 /* !!!! If _CONN_TYPE_MAX is ever over 31, we must grow the type field in
  * connection_t. */
 
@@ -102,6 +104,7 @@ edge_connection_t *edge_connection_new(int type, int socket_family);
 entry_connection_t *entry_connection_new(int type, int socket_family);
 control_connection_t *control_connection_new(int socket_family);
 listener_connection_t *listener_connection_new(int type, int socket_family);
+stats_reporter_connection_t *stats_reporter_connection_new(int socket_family);
 connection_t *connection_new(int type, int socket_family);
 int connection_init_accepted_conn(connection_t *conn,
                                   const listener_connection_t *listener);

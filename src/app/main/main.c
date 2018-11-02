@@ -70,6 +70,7 @@
 #include "lib/crypt_ops/crypto_s2k.h"
 #include "lib/err/backtrace.h"
 #include "lib/geoip/geoip.h"
+#include "lib/stats/stats_store.h"
 
 #include "lib/process/waitpid.h"
 
@@ -1413,6 +1414,9 @@ tor_run_main(const tor_main_configuration_t *tor_cfg)
   }
 #endif /* !defined(_WIN64) */
 #endif /* defined(_WIN32) */
+
+  /* Initialize the stats store early since it's used in tor_malloc(). */
+  stats_store_init();
 
   {
     int bt_err = configure_backtrace_handler(get_version());

@@ -229,6 +229,13 @@ struct or_options_t {
                     * this explicit so we can change how we behave in the
                     * future. */
 
+  /** List of stats reporters. */
+  struct config_line_t *StatsReporter;
+  /** Prefix to use in StatsReporter protocols. */
+  char *StatsReporterPrefix;
+  /** Stats reporter granularity (in seconds). */
+  int StatsReporterGranularity;
+
   /** Boolean: if we know the bridge's digest, should we get new
    * descriptors from the bridge authorities or from the bridge itself? */
   int UpdateBridgesFromAuthority;

@@ -18,6 +18,7 @@ struct buf_t;
 #define DIR_CONNECTION_MAGIC 0x9988ffeeu
 #define CONTROL_CONNECTION_MAGIC 0x8abc765du
 #define LISTENER_CONNECTION_MAGIC 0x1a1ac741u
+#define STATS_REPORTER_CONNECTION_MAGIC 0x0a0407c5
 
 /** Description of a connection to another host or process, and associated
  * data.
