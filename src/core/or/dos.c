@@ -604,6 +604,7 @@ void
 dos_note_refuse_single_hop_client(void)
 {
   num_single_hop_client_refused++;
+  stats_store_update(STAT_DOS_REFUSED_SINGLE_HOP, 1);
 }
 
 /* Return true iff single hop client connection (ESTABLISH_RENDEZVOUS) should

@@ -43,6 +43,9 @@ typedef enum {
   /** DoS subsystem: Rejected address connections. */
   STAT_DOS_REJECTED_ADDRS,
 
+  /** DoS subsystem: Refused single hop client. */
+  STAT_DOS_REFUSED_SINGLE_HOP,
+
   /** Command: CREATE cells. */
   STAT_COMMAND_CREATE_CELLS_PROCESSED,
 

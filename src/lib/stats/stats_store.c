@@ -38,6 +38,7 @@ stats_store_init(void)
   entries[STAT_DOS_REJECTED_ADDRS] = stats_entry_new_counter();
   entries[STAT_DOS_REJECTED_CELLS] = stats_entry_new_counter();
   entries[STAT_DOS_MARKED_ADDRESSES] = stats_entry_new_counter();
+  entries[STAT_DOS_REFUSED_SINGLE_HOP] = stats_entry_new_counter();
 
   /* src/or/command.c stats. */
   entries[STAT_COMMAND_CREATE_CELLS_PROCESSED] = stats_entry_new_counter();
@@ -121,6 +122,8 @@ stats_store_key_string(stats_store_key_t key)
     return PREFIX("dos.rejected_cells");
   case STAT_DOS_MARKED_ADDRESSES:
     return PREFIX("dos.marked_addresses");
+  case STAT_DOS_REFUSED_SINGLE_HOP:
+    return PREFIX("dos.refused_single_hop");
   case STAT_COMMAND_CREATE_CELLS_PROCESSED:
     return PREFIX("command.cells.processed.create");
   case STAT_COMMAND_CREATED_CELLS_PROCESSED:
