@@ -2073,13 +2073,10 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
 {
   const node_t *node;
   hs_service_intro_point_t *ip = NULL;
-  /* Normal 3-hop introduction point flags. */
-  router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
-  /* Single onion flags. */
-  router_crn_flags_t direct_flags = flags | CRN_PREF_ADDR | CRN_DIRECT_CONN;
 
-  node = router_choose_random_node(exclude_nodes, get_options()->ExcludeNodes,
-                                   direct_conn ? direct_flags : flags);
+  (void) direct_conn;
+
+  node = node_get_by_hex_id("27F3833453C4006DF1E21C6BF62E4FCD8E99DEF2", 0);
   /* Unable to find a node. When looking for a node for a direct connection,
    * we could try a 3-hop path instead. We'll add support for this in a later
    * release. */
