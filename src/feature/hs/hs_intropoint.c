@@ -24,9 +24,10 @@
 #include "trunnel/hs/cell_introduce1.h"
 
 #include "feature/hs/hs_circuitmap.h"
-#include "feature/hs/hs_descriptor.h"
-#include "feature/hs/hs_intropoint.h"
 #include "feature/hs/hs_common.h"
+#include "feature/hs/hs_descriptor.h"
+#include "feature/hs/hs_dos.h"
+#include "feature/hs/hs_intropoint.h"
 
 #include "core/or/or_circuit_st.h"
 
@@ -478,6 +479,15 @@ handle_introduce1(or_circuit_t *client_circ, const uint8_t *request,
       status = HS_INTRO_ACK_STATUS_UNKNOWN_ID;
       goto send_ack;
     }
+  }
+
+  /* Before sending, lets make sure this cell can be sent on the service
+   * circuit asking the DoS defenses. */
+  if (!hs_dos_can_send_intro2(service_circ)) {
+    log_info(LD_PROTOCOL, "Can't relay INTRODUCE1 v3 cell due to DoS "
+                          "limitations. Sending NACK to client.");
+    status = HS_INTRO_ACK_STATUS_CANT_RELAY;
+    goto send_ack;
   }
 
   /* Relay the cell to the service on its intro circuit with an INTRODUCE2
