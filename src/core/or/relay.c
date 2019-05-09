@@ -1989,10 +1989,25 @@ connection_edge_process_relay_cell(cell_t *cell, circuit_t *circ,
       log_info(domain,
                "'resolved' received, no conn attached anymore. Ignoring.");
       return 0;
+    case RELAY_COMMAND_INTRODUCE2:
+      /* Update our circuit-level deliver window that we received a DATA cell.
+       * If the deliver window goes below 0, we end the circuit and stream due
+       * to a protocol failure. */
+      if (sendme_circuit_data_received(circ, layer_hint) < 0) {
+        log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
+               "(relay data) circ deliver_window below 0. Killing.");
+        connection_edge_end_close(conn, END_STREAM_REASON_TORPROTOCOL);
+        return -END_CIRC_REASON_TORPROTOCOL;
+      }
+      /* Consider sending a circuit-level SENDME cell. */
+      sendme_circuit_consider_sending(circ, layer_hint);
+      rend_process_relay_cell(circ, layer_hint,
+                              rh.command, rh.length,
+                              cell->payload+RELAY_HEADER_SIZE);
+      return 0;
     case RELAY_COMMAND_ESTABLISH_INTRO:
     case RELAY_COMMAND_ESTABLISH_RENDEZVOUS:
     case RELAY_COMMAND_INTRODUCE1:
-    case RELAY_COMMAND_INTRODUCE2:
     case RELAY_COMMAND_INTRODUCE_ACK:
     case RELAY_COMMAND_RENDEZVOUS1:
     case RELAY_COMMAND_RENDEZVOUS2:
