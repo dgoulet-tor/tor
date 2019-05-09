@@ -697,6 +697,16 @@ relay_send_command_from_edge_,(streamid_t stream_id, circuit_t *circ,
     return -1;
   }
 
+  /* Handle the circuit-level SENDME package window. */
+  if (relay_command == RELAY_COMMAND_INTRODUCE2) {
+    if (sendme_note_circuit_data_packaged(circ, cpath_layer) < 0) {
+      /* Package window has gone under 0. Protocol issue. */
+      log_fn(LOG_PROTOCOL_WARN, LD_PROTOCOL,
+             "Circuit package window is below 0. Closing circuit.");
+      return -1;
+    }
+  }
+
   /* If applicable, note the cell digest for the SENDME version 1 purpose if
    * we need to. This call needs to be after the circuit_package_relay_cell()
    * because the cell digest is set within that function. */
