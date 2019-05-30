@@ -21,7 +21,7 @@
 static void
 test_can_send_intro2(void *arg)
 {
-  time_t now = approx_time();
+  uint32_t now = (uint32_t) approx_time();
   or_circuit_t *or_circ = NULL;
 
   (void) arg;
