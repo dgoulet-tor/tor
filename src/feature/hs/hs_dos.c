@@ -32,7 +32,8 @@ hs_dos_can_send_intro2(or_circuit_t *s_intro_circ)
    * evaluate if we can send it based on our token bucket state. */
 
   /* Refill INTRODUCE2 bucket. */
-  token_bucket_ctr_refill(&s_intro_circ->introduce2_bucket, approx_time());
+  token_bucket_ctr_refill(&s_intro_circ->introduce2_bucket,
+                          (uint32_t) approx_time());
 
   /* Decrement the bucket for this valid INTRODUCE1 cell we just got. Don't
    * underflow else we end up with a too big of a bucket. */
