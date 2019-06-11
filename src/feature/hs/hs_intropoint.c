@@ -487,8 +487,13 @@ handle_introduce1(or_circuit_t *client_circ, const uint8_t *request,
   /* Before sending, lets make sure this cell can be sent on the service
    * circuit asking the DoS defenses. */
   if (!hs_dos_can_send_intro2(service_circ)) {
-    log_info(LD_PROTOCOL, "Can't relay INTRODUCE1 v3 cell due to DoS "
-                          "limitations. Sending NACK to client.");
+    char *msg;
+    static ratelim_t rlimit = RATELIM_INIT(5 * 60);
+    if ((msg = rate_limit_log(&rlimit, approx_time()))) {
+      log_info(LD_PROTOCOL, "Can't relay INTRODUCE1 v3 cell due to DoS "
+                            "limitations. Sending NACK to client.");
+      tor_free(msg);
+    }
     status = TRUNNEL_HS_INTRO_ACK_STATUS_UNKNOWN_ID;
     goto send_ack;
   }
