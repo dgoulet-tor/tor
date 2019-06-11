@@ -21,8 +21,11 @@ bool
 hs_dos_can_send_intro2(or_circuit_t *s_intro_circ)
 {
   tor_assert(s_intro_circ);
-  tor_assert(TO_CIRCUIT(s_intro_circ)->purpose ==
-             CIRCUIT_PURPOSE_INTRO_POINT);
+
+  /* Should not happen but if so, scream loudly. */
+  if (BUG(TO_CIRCUIT(s_intro_circ)->purpose != CIRCUIT_PURPOSE_INTRO_POINT)) {
+    return false;
+  }
 
   /* This is called just after we got a valid and parsed INTRODUCE1 cell. The
    * service has been found and we have its introduction circuit.
