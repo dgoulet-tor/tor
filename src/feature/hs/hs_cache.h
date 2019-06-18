@@ -83,8 +83,8 @@ const hs_descriptor_t *
 hs_cache_lookup_as_client(const struct ed25519_public_key_t *key);
 const char *
 hs_cache_lookup_encoded_as_client(const struct ed25519_public_key_t *key);
-int hs_cache_store_as_client(const char *desc_str,
-                             const struct ed25519_public_key_t *identity_pk);
+hs_desc_decode_status_t hs_cache_store_as_client(const char *desc_str,
+                           const struct ed25519_public_key_t *identity_pk);
 void hs_cache_clean_as_client(time_t now);
 void hs_cache_purge_as_client(void);
 
@@ -98,6 +98,8 @@ const hs_cache_intro_state_t *hs_cache_client_intro_state_find(
                               const struct ed25519_public_key_t *auth_key);
 void hs_cache_client_intro_state_clean(time_t now);
 void hs_cache_client_intro_state_purge(void);
+
+bool hs_cache_client_new_auth_parse(const ed25519_public_key_t *service_pk);
 
 #ifdef HS_CACHE_PRIVATE
 #include "lib/crypt_ops/crypto_ed25519.h"

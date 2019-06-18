@@ -29,8 +29,8 @@
 #
 # Remember: It is better to fix the problem than to add a new exception!
 
-problem file-size /src/app/config/config.c 8518
-problem include-count /src/app/config/config.c 87
+problem file-size /src/app/config/config.c 8521
+problem include-count /src/app/config/config.c 88
 problem function-size /src/app/config/config.c:options_act_reversible() 296
 problem function-size /src/app/config/config.c:options_act() 589
 problem function-size /src/app/config/config.c:resolve_my_address() 192
@@ -42,7 +42,7 @@ problem function-size /src/app/config/config.c:parse_bridge_line() 104
 problem function-size /src/app/config/config.c:parse_transport_line() 191
 problem function-size /src/app/config/config.c:parse_dir_authority_line() 151
 problem function-size /src/app/config/config.c:parse_dir_fallback_line() 102
-problem function-size /src/app/config/config.c:parse_port_config() 452
+problem function-size /src/app/config/config.c:parse_port_config() 456
 problem function-size /src/app/config/config.c:parse_ports() 170
 problem function-size /src/app/config/config.c:getinfo_helper_config() 116
 problem function-size /src/app/config/confparse.c:config_assign_value() 205
@@ -53,7 +53,8 @@ problem function-size /src/app/main/main.c:tor_init() 137
 problem function-size /src/app/main/main.c:sandbox_init_filter() 291
 problem function-size /src/app/main/main.c:run_tor_main_loop() 105
 problem function-size /src/app/main/ntmain.c:nt_service_install() 126
-problem file-size /src/core/mainloop/connection.c 5569
+problem file-size /src/core/mainloop/connection.c 5571
+problem include-count /src/app/main/shutdown.c 52
 problem include-count /src/core/mainloop/connection.c 62
 problem function-size /src/core/mainloop/connection.c:connection_free_minimal() 185
 problem function-size /src/core/mainloop/connection.c:connection_listener_new() 328
@@ -101,7 +102,7 @@ problem function-size /src/core/or/circuituse.c:circuit_get_open_circ_or_launch(
 problem function-size /src/core/or/circuituse.c:connection_ap_handshake_attach_circuit() 244
 problem function-size /src/core/or/command.c:command_process_create_cell() 156
 problem function-size /src/core/or/command.c:command_process_relay_cell() 132
-problem file-size /src/core/or/connection_edge.c 4595
+problem file-size /src/core/or/connection_edge.c 4601
 problem include-count /src/core/or/connection_edge.c 65
 problem function-size /src/core/or/connection_edge.c:connection_ap_expire_beginning() 117
 problem function-size /src/core/or/connection_edge.c:connection_ap_handshake_rewrite() 192
@@ -145,8 +146,11 @@ problem function-size /src/feature/control/control.c:connection_control_process_
 problem function-size /src/feature/control/control_auth.c:handle_control_authchallenge() 103
 problem function-size /src/feature/control/control_auth.c:handle_control_authenticate() 187
 problem function-size /src/feature/control/control_cmd.c:handle_control_extendcircuit() 151
-problem function-size /src/feature/control/control_cmd.c:handle_control_add_onion() 269
-problem function-size /src/feature/control/control_cmd.c:add_onion_helper_keyarg() 125
+problem function-size /src/feature/control/control_cmd.c:handle_control_hsfetch() 114
+problem function-size /src/feature/control/control_cmd.c:handle_control_hspost() 117
+problem function-size /src/feature/control/control_cmd.c:handle_control_add_onion() 293
+problem function-size /src/feature/control/control_cmd.c:add_onion_helper_keyarg() 126
+problem function-size /src/feature/control/control_cmd.c:handle_control_command() 104
 problem function-size /src/feature/control/control_events.c:control_event_stream_status() 119
 problem include-count /src/feature/control/control_getinfo.c 54
 problem function-size /src/feature/control/control_getinfo.c:getinfo_helper_misc() 109
@@ -172,7 +176,7 @@ problem function-size /src/feature/dircache/consdiffmgr.c:consdiffmgr_rescan_fla
 problem function-size /src/feature/dircache/consdiffmgr.c:consensus_diff_worker_threadfn() 132
 problem function-size /src/feature/dircache/dircache.c:handle_get_current_consensus() 166
 problem function-size /src/feature/dircache/dircache.c:directory_handle_command_post() 120
-problem file-size /src/feature/dirclient/dirclient.c 3215
+problem file-size /src/feature/dirclient/dirclient.c 3238
 problem include-count /src/feature/dirclient/dirclient.c 51
 problem function-size /src/feature/dirclient/dirclient.c:directory_get_from_dirserver() 131
 problem function-size /src/feature/dirclient/dirclient.c:directory_initiate_request() 201
@@ -202,7 +206,7 @@ problem function-size /src/feature/hs/hs_descriptor.c:desc_encode_v3() 104
 problem function-size /src/feature/hs/hs_descriptor.c:decrypt_desc_layer() 110
 problem function-size /src/feature/hs/hs_descriptor.c:decode_introduction_point() 122
 problem function-size /src/feature/hs/hs_descriptor.c:desc_decode_superencrypted_v3() 109
-problem function-size /src/feature/hs/hs_descriptor.c:desc_decode_encrypted_v3() 109
+problem function-size /src/feature/hs/hs_descriptor.c:desc_decode_encrypted_v3() 111
 problem file-size /src/feature/hs/hs_service.c 4109
 problem function-size /src/feature/keymgt/loadkey.c:ed_key_init_from_file() 333
 problem function-size /src/feature/nodelist/authcert.c:trusted_dirs_load_certs_from_string() 124
