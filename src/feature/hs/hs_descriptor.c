@@ -2809,7 +2809,9 @@ hs_desc_encrypted_obj_size(const hs_desc_encrypted_data_t *data)
   size_t
 hs_desc_obj_size(const hs_descriptor_t *data)
 {
-  tor_assert(data);
+  if (data == NULL) {
+    return 0;
+  }
   return (hs_desc_plaintext_obj_size(&data->plaintext_data) +
           hs_desc_encrypted_obj_size(&data->encrypted_data) +
           sizeof(data->subcredential));
