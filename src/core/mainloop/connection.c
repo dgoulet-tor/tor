@@ -113,6 +113,8 @@
 #include "lib/evloop/compat_libevent.h"
 #include "lib/compress/compress.h"
 
+#include "lib/trace/events.h"
+
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -4142,6 +4144,7 @@ connection_handle_write_impl(connection_t *conn, int force)
      * the *_buf_tls functions, we should make them return ssize_t or size_t
      * or something. */
     result = (int)(initial_size-buf_datalen(conn->outbuf));
+    cell_relay_tracing_flush(conn, result);
   } else {
     CONN_LOG_PROTECT(conn,
                      result = buf_flush_to_socket(conn->outbuf, conn->s,

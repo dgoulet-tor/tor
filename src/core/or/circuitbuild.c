@@ -1480,6 +1480,8 @@ onionskin_answer(or_circuit_t *circ,
 
   tor_assert(keys_len == CPATH_KEY_MATERIAL_LEN);
 
+  memset(&cell, 0, sizeof(cell_t));
+
   if (created_cell_format(&cell, created_cell) < 0) {
     log_warn(LD_BUG,"couldn't format created cell (type=%d, len=%d)",
              (int)created_cell->cell_type, (int)created_cell->handshake_len);

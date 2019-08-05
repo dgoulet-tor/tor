@@ -24,6 +24,7 @@
 #include "lib/thread/thread_sys.h"
 #include "lib/time/time_sys.h"
 #include "lib/tls/tortls_sys.h"
+#include "lib/trace/trace_sys.h"
 #include "lib/wallclock/wallclock_sys.h"
 #include "lib/evloop/evloop_sys.h"
 
@@ -35,6 +36,7 @@
  * Global list of the subsystems in Tor, in the order of their initialization.
  **/
 const subsys_fns_t *tor_subsystems[] = {
+  &sys_tracing, /* -100 */
   &sys_winprocess, /* -100 */
   &sys_torerr, /* -100 */
   &sys_wallclock, /* -99 */

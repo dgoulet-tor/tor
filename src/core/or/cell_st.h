@@ -14,6 +14,10 @@ struct cell_t {
   uint8_t command; /**< Type of the cell: one of CELL_PADDING, CELL_CREATE,
                     * CELL_DESTROY, etc */
   uint8_t payload[CELL_PAYLOAD_SIZE]; /**< Cell body. */
+
+#ifdef TOR_EVENT_TRACING_ENABLED
+  uint32_t id;
+#endif
 };
 
 #endif /* !defined(CELL_ST_H) */

@@ -73,6 +73,7 @@
 
 #include "lib/tls/tortls.h"
 #include "lib/tls/x509.h"
+#include "lib/trace/events.h"
 
 /** How many CELL_PADDING cells have we received, ever? */
 uint64_t stats_n_padding_cells_processed = 0;
@@ -807,6 +808,8 @@ channel_tls_write_cell_method(channel_t *chan, cell_t *cell)
 
   if (tlschan->conn) {
     connection_or_write_cell_to_buf(cell, tlschan->conn);
+    cell_relay_tracing_outbuf(cell, TO_CONN(tlschan->conn),
+                              chan->wide_circ_ids);
     ++written;
   } else {
     log_info(LD_CHANNEL,
@@ -840,7 +843,9 @@ channel_tls_write_packed_cell_method(channel_t *chan,
 
   if (tlschan->conn) {
     connection_buf_add(packed_cell->body, cell_network_size,
-                            TO_CONN(tlschan->conn));
+                       TO_CONN(tlschan->conn));
+    cell_relay_tracing_outbuf_packed(packed_cell, TO_CONN(tlschan->conn),
+                                     chan->wide_circ_ids);
   } else {
     log_info(LD_CHANNEL,
              "something called write_packed_cell on a tlschan "

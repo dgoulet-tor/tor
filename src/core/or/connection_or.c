@@ -81,6 +81,7 @@
 #include "lib/tls/x509.h"
 
 #include "core/or/orconn_event.h"
+#include "lib/trace/events.h"
 
 static int connection_tls_finish_handshake(or_connection_t *conn);
 static int connection_or_launch_v3_or_handshake(or_connection_t *conn);
@@ -508,6 +509,9 @@ cell_pack(packed_cell_t *dst, const cell_t *src, int wide_circ_ids)
   }
   set_uint8(dest, src->command);
   memcpy(dest+1, src->payload, CELL_PAYLOAD_SIZE);
+#ifdef TOR_EVENT_TRACING_ENABLED
+  dst->id = src->id;
+#endif
 }
 
 /** Unpack the network-order buffer <b>src</b> into a host-order
@@ -2424,6 +2428,7 @@ connection_or_process_cells_from_inbuf(or_connection_t *conn)
       /* retrieve cell info from buf (create the host-order struct from the
        * network-order string) */
       cell_unpack(&cell, buf, wide_circ_ids);
+      cell_relay_tracing_inbuf(&cell);
 
       channel_tls_handle_cell(&cell, conn);
     }
