@@ -66,7 +66,8 @@ TOR_UTIL_LIBS = \
 	src/lib/libtor-err.a \
 	src/lib/libtor-version.a \
 	src/lib/libtor-intmath.a \
-	src/lib/libtor-ctime.a
+	src/lib/libtor-ctime.a \
+	src/lib/libtor-trace.a
 
 # Variants of the above for linking the testing variant of tor (for coverage
 # and tests)
@@ -100,7 +101,8 @@ TOR_UTIL_TESTING_LIBS = \
 	src/lib/libtor-err-testing.a \
 	src/lib/libtor-version-testing.a \
 	src/lib/libtor-intmath.a \
-	src/lib/libtor-ctime-testing.a
+	src/lib/libtor-ctime-testing.a \
+	src/lib/libtor-trace.a
 endif
 
 # Internal crypto libraries used in Tor
@@ -127,8 +129,7 @@ TOR_INTERNAL_LIBS = \
 	src/lib/libtor-evloop.a \
 	$(TOR_CRYPTO_LIBS) \
 	$(TOR_UTIL_LIBS) \
-	src/trunnel/libor-trunnel.a \
-	src/lib/libtor-trace.a
+	src/trunnel/libor-trunnel.a
 
 # Variants of the above for linking the testing variant of tor (for coverage
 # and tests)
@@ -139,8 +140,7 @@ TOR_INTERNAL_TESTING_LIBS = \
 	src/lib/libtor-evloop-testing.a \
 	$(TOR_CRYPTO_TESTING_LIBS) \
 	$(TOR_UTIL_TESTING_LIBS) \
-	src/trunnel/libor-trunnel-testing.a \
-	src/lib/libtor-trace.a
+	src/trunnel/libor-trunnel-testing.a
 endif
 
 TOR_LDFLAGS_CRYPTLIB=@TOR_LDFLAGS_openssl@

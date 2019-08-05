@@ -16,6 +16,9 @@ struct packed_cell_t {
   char body[CELL_MAX_NETWORK_SIZE]; /**< Cell as packed for network. */
   uint32_t inserted_timestamp; /**< Time (in timestamp units) when this cell
                                 * was inserted */
+#ifdef TOR_EVENT_TRACING_ENABLED
+  uint32_t id;
+#endif
 };
 
 /** A queue of cells on a circuit, waiting to be added to the

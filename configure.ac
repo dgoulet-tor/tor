@@ -227,6 +227,28 @@ if test x$enable_event_tracing_debug = xyes; then
   AC_DEFINE([TOR_EVENT_TRACING_ENABLED], [1], [Compile the event tracing instrumentation])
 fi
 
+AC_ARG_ENABLE(event-tracing-lttng,
+     AS_HELP_STRING(--enable-event-tracing-lttng, [build with LTTng-UST support]))
+AM_CONDITIONAL([USE_EVENT_TRACING_LTTNG], [test "x$enable_event_tracing_lttng" = "xyes"])
+
+TOR_TRACE_LIBS=
+
+if test x$enable_event_tracing_lttng = xyes; then
+  AC_CHECK_HEADERS([lttng/tracepoint.h])
+  AC_DEFINE([USE_EVENT_TRACING_LTTNG], [1], [Tracing framework to log debug])
+  AC_DEFINE([TOR_EVENT_TRACING_ENABLED], [1], [Compile the event tracing instrumentation])
+  TOR_TRACE_LIBS="-llttng-ust -ldl"
+fi
+AC_SUBST([TOR_TRACE_LIBS])
+
+AC_ARG_ENABLE(event-tracing-cells,
+  AS_HELP_STRING(--enable-event-tracing-cells, [build with support for cell tracing]))
+AM_CONDITIONAL([USE_EVENT_TRACING_CELLS], [test "x$enable_event_tracing_cells" = "xyes"])
+
+if test x$enable_event_tracing_cells = xyes; then
+  AC_DEFINE([USE_EVENT_TRACING_CELLS], [1], [Tracing framework to trace cells])
+fi
+
 dnl Enable Android only features.
 AC_ARG_ENABLE(android,
      AS_HELP_STRING(--enable-android, [build with Android features enabled]))

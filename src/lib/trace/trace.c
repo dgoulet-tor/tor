@@ -10,8 +10,17 @@
 
 #include "lib/trace/trace.h"
 
+#include "cells.h"
+
 /** Initialize the tracing library. */
 void
 tor_trace_init(void)
 {
+  cell_relay_tracing_init();
+}
+
+void
+tor_trace_free_all(void)
+{
+  cell_relay_tracing_free_all();
 }

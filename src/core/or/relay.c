@@ -95,6 +95,8 @@
 #include "core/or/socks_request_st.h"
 #include "core/or/sendme.h"
 
+#include "lib/trace/events.h"
+
 static edge_connection_t *relay_lookup_conn(circuit_t *circ, cell_t *cell,
                                             cell_direction_t cell_direction,
                                             crypt_path_t *layer_hint);
@@ -251,6 +253,8 @@ circuit_receive_relay_cell(cell_t *cell, circuit_t *circ,
      * the SENDME if need be. */
     sendme_record_received_cell_digest(circ, layer_hint);
 
+    cell_relay_tracing_recognized(cell);
+
     if (circ->purpose == CIRCUIT_PURPOSE_PATH_BIAS_TESTING) {
       if (pathbias_check_probe_response(circ, cell) == -1) {
         pathbias_count_valid_cells(circ, cell);
@@ -347,6 +351,7 @@ circuit_receive_relay_cell(cell_t *cell, circuit_t *circ,
                                   * the cells. */
 
   append_cell_to_circuit_queue(circ, chan, cell, cell_direction, 0);
+
   return 0;
 }
 
@@ -3136,6 +3141,7 @@ append_cell_to_circuit_queue(circuit_t *circ, channel_t *chan,
    * this function use the stack for the cell memory. */
   cell_queue_append_packed_copy(circ, queue, exitward, cell,
                                 chan->wide_circ_ids, 1);
+  cell_relay_tracing_queue(cell);
 
   /* Check and run the OOM if needed. */
   if (PREDICT_UNLIKELY(cell_queues_check_size())) {

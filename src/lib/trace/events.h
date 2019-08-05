@@ -32,7 +32,12 @@
  * mapped to a log_debug(). */
 #ifdef USE_EVENT_TRACING_DEBUG
 #include "lib/trace/debug.h"
+#elif USE_EVENT_TRACING_LTTNG
+#include "lib/trace/lttng/lttng.h"
 #endif
+
+/* Cell tracing. */
+#include "cells.h"
 
 #else /* !(defined(TOR_EVENT_TRACING_ENABLED)) */
 

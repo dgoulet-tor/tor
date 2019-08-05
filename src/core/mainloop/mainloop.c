@@ -113,6 +113,8 @@
 #include "feature/nodelist/routerinfo_st.h"
 #include "core/or/socks_request_st.h"
 
+#include "lib/trace/events.h"
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -1264,6 +1266,8 @@ run_connection_housekeeping(int i, time_t now)
     memset(&cell,0,sizeof(cell_t));
     cell.command = CELL_PADDING;
     connection_or_write_cell_to_buf(&cell, or_conn);
+    cell_relay_tracing_outbuf(&cell, TO_CONN(or_conn),
+                              chan->wide_circ_ids);
   } else {
     channelpadding_decide_to_pad_channel(chan);
   }
