@@ -1,0 +1,3 @@
+  o Minor features (directory authority):
+    - A new IP address the directory authority "dizum" has been changed. Fixes
+      bug 31406; bugfix on 0.4.2.0-alpha.
