@@ -16,6 +16,8 @@
 
 #include "core/or/or_connection_st.h"
 
+#include "lib/trace/events.h"
+
 /**
  * \file scheduler.c
  * \brief Channel scheduling system: decides which channels should send and
@@ -562,6 +564,7 @@ scheduler_channel_has_waiting_cells,(channel_t *chan))
                            scheduler_compare_channels,
                            offsetof(channel_t, sched_heap_idx),
                            chan);
+      tor_trace(sched, queue, chan, circuitmux_num_cells(chan->cmux));
     }
     /* If we made a channel pending, we potentially have scheduling work to
      * do. */

@@ -10,6 +10,7 @@
 #define TOR_TRACE_LTTNG_H
 
 #include "providers_cell.h"
+#include "providers_sched.h"
 
 #undef tor_trace
 #define tor_trace(subsystem, event_name, args...) \
@@ -19,6 +20,7 @@
  * Tracepoints.
  */
 
+/* Cells. */
 #define tor_trace_cell_inbuf(cell) \
   tracepoint(tor_cell, inbuf, (cell))
 
@@ -39,5 +41,9 @@
 
 #define tor_trace_cell_recognized(cell) \
   tracepoint(tor_cell, recognized, (cell))
+
+/* Scheduler. */
+#define tor_trace_sched_queue(chan, n_cells) \
+  tracepoint(tor_sched, queue, (chan), (n_cells))
 
 #endif /* !defined(TOR_TRACE_LTTNG_H) */
