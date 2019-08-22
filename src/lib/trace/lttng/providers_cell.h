@@ -12,8 +12,8 @@
 #undef TRACEPOINT_INCLUDE
 #define TRACEPOINT_INCLUDE "./lib/trace/lttng/providers_cell.h"
 
-#if !defined(_TRACEPOINT_TOR_CELL) || defined(TRACEPOINT_HEADER_MULTI_READ)
-#define _TRACEPOINT_TOR_CELL
+#if !defined(_TRACEPOINT_TOR_CELL_H) || defined(TRACEPOINT_HEADER_MULTI_READ)
+#define _TRACEPOINT_TOR_CELL_H
 
 #include <lttng/tracepoint.h>
 
@@ -84,6 +84,6 @@ TRACEPOINT_EVENT(tor_cell, recognized,
   )
 )
 
-#endif /* _TRACEPOINT_TOR_CELL */
+#endif /* _TRACEPOINT_TOR_CELL_H */
 
 #include <lttng/tracepoint-event.h>

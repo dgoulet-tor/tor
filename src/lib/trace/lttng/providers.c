@@ -6,9 +6,11 @@
  * \brief XXX: Write a brief introduction to this module.
  **/
 
-#define PROVIDERS_PRIVATE
-
-#define TRACEPOINT_CREATE_PROBES
+/*
+ * Create the traceprobes. Only done once in this C file.
+ */
 #define TRACEPOINT_DEFINE
+#define TRACEPOINT_CREATE_PROBES
 
-#include "providers_cell.h"
+/* Headers containing TRACEPOINT_EVENT. */
+#include "providers.h"

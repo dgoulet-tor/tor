@@ -2,14 +2,16 @@
 /* See LICENSE for licensing information */
 
 /**
- * \file debug.h
+ * \file lttng.h
  * \brief Macros for debugging our event-trace support.
  **/
 
 #ifndef TOR_TRACE_LTTNG_H
 #define TOR_TRACE_LTTNG_H
 
-#include "providers_cell.h"
+#include <lttng/tracepoint.h>
+
+#include "providers.h"
 
 #undef tor_trace
 #define tor_trace(subsystem, event_name, args...) \
@@ -39,5 +41,42 @@
 
 #define tor_trace_cell_recognized(cell) \
   tracepoint(tor_cell, recognized, (cell))
+
+/* HS Client Tracepoints. */
+
+#define tor_trace_hs_client_launch_circ(circ) \
+  tracepoint(tor_hs_client, launch_circ, (circ))
+
+#define tor_trace_hs_client_intro_opened(circ) \
+  tracepoint(tor_hs_client, intro_opened, (circ))
+
+#define tor_trace_hs_client_intro_established(circ, status) \
+  tracepoint(tor_hs_client, intro_established, (circ), (status))
+
+#define tor_trace_hs_client_rendezvous_opened(circ) \
+  tracepoint(tor_hs_client, rendezvous_opened, (circ))
+
+#define tor_trace_hs_client_rendezvous_established(circ) \
+  tracepoint(tor_hs_client, rendezvous_established, (circ))
+
+#define tor_trace_hs_client_rendezvous2(circ) \
+  tracepoint(tor_hs_client, rendezvous2, (circ))
+
+#define tor_trace_hs_client_store_desc(desc) \
+  tracepoint(tor_hs_client, store_desc, (desc))
+
+/* Circuit Tracepoints. */
+
+#define tor_trace_circuit_establish(circ) \
+  tracepoint(tor_circuit, establish, (circ))
+
+#define tor_trace_circuit_cannibalized(circ) \
+  tracepoint(tor_circuit, cannibalized, (circ))
+
+#define tor_trace_circuit_timeout(circ, cutoff) \
+  tracepoint(tor_circuit, timeout, (circ), (cutoff))
+
+#define tor_trace_circuit_idle_timeout(circ) \
+  tracepoint(tor_circuit, idle_timeout, (circ))
 
 #endif /* !defined(TOR_TRACE_LTTNG_H) */

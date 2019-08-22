@@ -18,18 +18,15 @@ TRACEHEADERS += \
 	src/lib/trace/debug.h
 endif
 
+if USE_EVENT_TRACING_LTTNG
+include src/lib/trace/lttng/include.am
+endif
+
 if USE_EVENT_TRACING_CELLS
 TRACEHEADERS += \
 	src/lib/trace/cells.h
 LIBTOR_TRACE_A_SOURCES += \
 	src/lib/trace/cells.c
-endif
-
-if USE_EVENT_TRACING_LTTNG
-TRACEHEADERS += \
-	src/lib/trace/lttng/lttng.h
-LIBTOR_TRACE_A_SOURCES +=
-	src/lib/trace/lttng/providers.c
 endif
 
 src_lib_libtor_trace_a_SOURCES = $(LIBTOR_TRACE_A_SOURCES)

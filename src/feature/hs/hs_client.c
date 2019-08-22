@@ -36,6 +36,7 @@
 #include "lib/crypt_ops/crypto_format.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_util.h"
+#include "lib/trace/events.h"
 
 #include "core/or/cpath_build_state_st.h"
 #include "feature/dircommon/dir_connection_st.h"
@@ -715,6 +716,8 @@ client_intro_circ_has_opened(origin_circuit_t *circ)
   log_info(LD_REND, "Introduction circuit %u has opened. Attaching streams.",
            (unsigned int) TO_CIRCUIT(circ)->n_circ_id);
 
+  tor_trace(hs_client, intro_opened, circ);
+
   /* This is an introduction circuit so we'll attach the correct
    * authentication key to the circuit identifier so it can be identified
    * properly later on. */
@@ -755,6 +758,8 @@ client_rendezvous_circ_has_opened(origin_circuit_t *circ)
     hs_circuitmap_register_rend_circ_client_side(circ,
                                      circ->hs_ident->rendezvous_cookie);
   }
+
+  tor_trace(hs_client, rendezvous_opened, circ);
 }
 
 /* This is an helper function that convert a descriptor intro point object ip
@@ -1086,6 +1091,7 @@ handle_introduce_ack(origin_circuit_t *circ, const uint8_t *payload,
   }
 
  end:
+  tor_trace(hs_client, intro_established, circ, status);
   return ret;
 }
 
@@ -1142,6 +1148,7 @@ handle_rendezvous2(origin_circuit_t *circ, const uint8_t *payload,
   }
   /* Success. Hidden service connection finalized! */
   ret = 0;
+  tor_trace(hs_client, rendezvous2, circ);
   goto end;
 
  err:
@@ -1445,6 +1452,7 @@ hs_client_receive_rendezvous_acked(origin_circuit_t *circ,
   /* If we already have the introduction circuit built, make sure we send
    * the INTRODUCE cell _now_ */
   connection_ap_attach_pending(1);
+  tor_trace(hs_client, rendezvous_established, circ);
 
   return 0;
  err:

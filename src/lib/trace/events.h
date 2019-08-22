@@ -37,7 +37,9 @@
 #endif
 
 /* Cell tracing. */
+#if USE_EVENT_TRACING_CELLS
 #include "cells.h"
+#endif
 
 #else /* !(defined(TOR_EVENT_TRACING_ENABLED)) */
 

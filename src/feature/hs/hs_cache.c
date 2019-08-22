@@ -13,6 +13,7 @@
 #include "app/config/config.h"
 #include "lib/crypt_ops/crypto_format.h"
 #include "lib/crypt_ops/crypto_util.h"
+#include "lib/trace/events.h"
 #include "feature/hs/hs_ident.h"
 #include "feature/hs/hs_common.h"
 #include "feature/hs/hs_client.h"
@@ -363,6 +364,7 @@ store_v3_desc_as_client(hs_cache_client_descriptor_t *desc)
   digest256map_set(hs_cache_v3_client, desc->key.pubkey, desc);
   /* Update cache size with this entry for the OOM handler. */
   rend_cache_increment_allocation(cache_get_client_entry_size(desc));
+  tor_trace(hs_client, store_desc, &desc->key);
 }
 
 /* Query our cache and return the entry or NULL if not found or if expired. */

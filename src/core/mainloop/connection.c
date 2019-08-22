@@ -106,14 +106,13 @@
 #include "feature/stats/rephist.h"
 #include "lib/crypt_ops/crypto_util.h"
 #include "lib/geoip/geoip.h"
+#include "lib/trace/events.h"
 
 #include "lib/sandbox/sandbox.h"
 #include "lib/net/buffers_net.h"
 #include "lib/tls/tortls.h"
 #include "lib/evloop/compat_libevent.h"
 #include "lib/compress/compress.h"
-
-#include "lib/trace/events.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>

@@ -2445,7 +2445,7 @@ dnl     -Wthread-safety-precise
 
   W_FLAGS="$W_FLAGS -W -Wfloat-equal -Wundef -Wpointer-arith"
   W_FLAGS="$W_FLAGS -Wstrict-prototypes -Wmissing-prototypes -Wwrite-strings"
-  W_FLAGS="$W_FLAGS -Wredundant-decls -Wchar-subscripts -Wcomment -Wformat=2"
+  W_FLAGS="$W_FLAGS -Wchar-subscripts -Wcomment -Wformat=2"
   W_FLAGS="$W_FLAGS -Wwrite-strings"
   W_FLAGS="$W_FLAGS -Wnested-externs -Wbad-function-cast -Wswitch-enum"
   W_FLAGS="$W_FLAGS -Waggregate-return -Wpacked -Wunused"

@@ -6,10 +6,7 @@
 #include "core/or/cell_queue_st.h"
 #include "core/or/cell_st.h"
 
-#include "cells.h"
-
-#define TRACEPOINT_CREATE_PROBES
-#define TRACEPOINT_DEFINE
+/* Tracing events. */
 #include "events.h"
 
 static uint32_t cell_next_id = 1;

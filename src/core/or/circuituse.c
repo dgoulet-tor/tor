@@ -61,6 +61,7 @@
 #include "feature/stats/predict_ports.h"
 #include "lib/math/fp.h"
 #include "lib/time/tvdiff.h"
+#include "lib/trace/events.h"
 
 #include "core/or/cpath_build_state_st.h"
 #include "feature/dircommon/dir_connection_st.h"
@@ -840,10 +841,12 @@ circuit_expire_building(void)
                  -1);
 
     circuit_log_path(LOG_INFO,LD_CIRC,TO_ORIGIN_CIRCUIT(victim));
+    tor_trace(circuit, timeout, TO_ORIGIN_CIRCUIT(victim), &cutoff);
     if (victim->purpose == CIRCUIT_PURPOSE_C_MEASURE_TIMEOUT)
       circuit_mark_for_close(victim, END_CIRC_REASON_MEASUREMENT_EXPIRED);
-    else
+    else {
       circuit_mark_for_close(victim, END_CIRC_REASON_TIMEOUT);
+    }
 
     pathbias_count_timeout(TO_ORIGIN_CIRCUIT(victim));
   } SMARTLIST_FOREACH_END(victim);
@@ -1503,8 +1506,11 @@ circuit_expire_old_circuits_clientside(void)
                 circ->purpose);
       /* Don't do this magic for testing circuits. Their death is governed
        * by circuit_expire_building */
-      if (circ->purpose != CIRCUIT_PURPOSE_PATH_BIAS_TESTING)
+      if (circ->purpose != CIRCUIT_PURPOSE_PATH_BIAS_TESTING) {
+        tor_trace(circuit, idle_timeout, TO_ORIGIN_CIRCUIT(circ));
         circuit_mark_for_close(circ, END_CIRC_REASON_FINISHED);
+      }
+
     } else if (!circ->timestamp_dirty && circ->state == CIRCUIT_STATE_OPEN) {
       if (timercmp(&circ->timestamp_began, &cutoff, OP_LT)) {
         if (circ->purpose == CIRCUIT_PURPOSE_C_GENERAL ||
@@ -1524,6 +1530,7 @@ circuit_expire_old_circuits_clientside(void)
                    TO_ORIGIN_CIRCUIT(circ)->global_identifier,
                    tv_mdiff(&circ->timestamp_began, &now));
           circuit_mark_for_close(circ, END_CIRC_REASON_FINISHED);
+          tor_trace(circuit, idle_timeout, TO_ORIGIN_CIRCUIT(circ));
         } else if (!TO_ORIGIN_CIRCUIT(circ)->is_ancient) {
           /* Server-side rend joined circuits can end up really old, because
            * they are reused by clients for longer than normal. The client
@@ -2160,6 +2167,7 @@ circuit_launch_by_extend_info(uint8_t purpose,
           tor_fragile_assert();
           return NULL;
       }
+      tor_trace(circuit, cannibalized, circ);
       return circ;
     }
   }
