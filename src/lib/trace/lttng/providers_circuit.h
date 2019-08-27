@@ -41,6 +41,10 @@ TRACEPOINT_ENUM(tor_circuit, purpose,
     ctf_enum_value("C_REND_JOINED", CIRCUIT_PURPOSE_C_REND_JOINED)
     ctf_enum_value("C_HSDIR_GET", CIRCUIT_PURPOSE_C_HSDIR_GET)
 
+    /* CBT and Padding. */
+    ctf_enum_value("C_MEASURE_TIMEOUT", CIRCUIT_PURPOSE_C_MEASURE_TIMEOUT)
+    ctf_enum_value("C_CIRCUIT_PADDING", CIRCUIT_PURPOSE_C_CIRCUIT_PADDING)
+
     /* Service Side. */
     ctf_enum_value("S_ESTABLISH_INTRO", CIRCUIT_PURPOSE_S_ESTABLISH_INTRO)
     ctf_enum_value("S_INTRO", CIRCUIT_PURPOSE_S_INTRO)
@@ -55,6 +59,39 @@ TRACEPOINT_ENUM(tor_circuit, purpose,
 
     /* VanGuard */
     ctf_enum_value("HS_VANGUARDS", CIRCUIT_PURPOSE_HS_VANGUARDS)
+  )
+)
+
+TRACEPOINT_ENUM(tor_circuit, end_reason,
+  TP_ENUM_VALUES(
+    ctf_enum_value("IP_NOW_REDUNDANT", END_CIRC_REASON_IP_NOW_REDUNDANT)
+    ctf_enum_value("MEASUREMENT_EXPIRED", END_CIRC_REASON_MEASUREMENT_EXPIRED)
+    ctf_enum_value("REASON_NOPATH", END_CIRC_REASON_NOPATH)
+    ctf_enum_value("AT_ORIGIN", END_CIRC_AT_ORIGIN)
+    ctf_enum_value("NONE", END_CIRC_REASON_NONE)
+    ctf_enum_value("TORPROTOCOL", END_CIRC_REASON_TORPROTOCOL)
+    ctf_enum_value("INTERNAL", END_CIRC_REASON_INTERNAL)
+    ctf_enum_value("REQUESTED", END_CIRC_REASON_REQUESTED)
+    ctf_enum_value("HIBERNATING", END_CIRC_REASON_HIBERNATING)
+    ctf_enum_value("RESOURCELIMIT", END_CIRC_REASON_RESOURCELIMIT)
+    ctf_enum_value("CONNECTFAILED", END_CIRC_REASON_CONNECTFAILED)
+    ctf_enum_value("OR_IDENTITY", END_CIRC_REASON_OR_IDENTITY)
+    ctf_enum_value("CHANNEL_CLOSED", END_CIRC_REASON_CHANNEL_CLOSED)
+    ctf_enum_value("FINISHED", END_CIRC_REASON_FINISHED)
+    ctf_enum_value("TIMEOUT", END_CIRC_REASON_TIMEOUT)
+    ctf_enum_value("DESTROYED", END_CIRC_REASON_DESTROYED)
+    ctf_enum_value("NOSUCHSERVICE", END_CIRC_REASON_NOSUCHSERVICE)
+    ctf_enum_value("FLAG_REMOTE", END_CIRC_REASON_FLAG_REMOTE)
+  )
+)
+
+TRACEPOINT_ENUM(tor_circuit, state,
+  TP_ENUM_VALUES(
+    ctf_enum_value("BUILDING", CIRCUIT_STATE_BUILDING)
+    ctf_enum_value("ONIONSKIN_PENDING", CIRCUIT_STATE_ONIONSKIN_PENDING)
+    ctf_enum_value("CHAN_WAIT", CIRCUIT_STATE_CHAN_WAIT)
+    ctf_enum_value("GUARD_WAIT", CIRCUIT_STATE_GUARD_WAIT)
+    ctf_enum_value("OPEN", CIRCUIT_STATE_OPEN)
   )
 )
 
@@ -89,6 +126,19 @@ TRACEPOINT_EVENT(tor_circuit, idle_timeout,
   TP_FIELDS(
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+  )
+)
+
+TRACEPOINT_EVENT(tor_circuit, about_to_free_origin,
+  TP_ARGS(const origin_circuit_t *, circ),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id, circ->global_identifier)
+    ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+    ctf_enum(tor_circuit, state, int, state, TO_CIRCUIT(circ)->state)
+    ctf_enum(tor_circuit, end_reason, int, close_reason,
+             TO_CIRCUIT(circ)->marked_for_close_reason)
+    ctf_enum(tor_circuit, end_reason, int, orig_close_reason,
+             TO_CIRCUIT(circ)->marked_for_close_orig_reason)
   )
 )
 

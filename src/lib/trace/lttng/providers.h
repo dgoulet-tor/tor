@@ -13,6 +13,7 @@
 
 #include "providers_cell.h"
 #include "providers_circuit.h"
-#include "providers_hs.h"
+#include "providers_hs_client.h"
+#include "providers_hs_service.h"
 
 #endif /* TOR_TRACE_LTTNG_PROVIDERS_H */

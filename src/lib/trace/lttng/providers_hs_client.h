@@ -10,7 +10,7 @@
 #define TRACEPOINT_PROVIDER tor_hs_client
 
 #undef TRACEPOINT_INCLUDE
-#define TRACEPOINT_INCLUDE "./lib/trace/lttng/providers_hs.h"
+#define TRACEPOINT_INCLUDE "./lib/trace/lttng/providers_hs_client.h"
 
 #if !defined(_TRACEPOINT_TOR_HS_CLIENT) || defined(TRACEPOINT_HEADER_MULTI_READ)
 #define _TRACEPOINT_TOR_HS_CLIENT
@@ -95,6 +95,15 @@ TRACEPOINT_EVENT(tor_hs_client, store_desc,
   TP_ARGS(const ed25519_public_key_t *, pk),
   TP_FIELDS(
     ctf_array_hex(char, hs_ident_pk, pk->pubkey, 4)
+  )
+)
+
+TRACEPOINT_EVENT(tor_hs_client, circ_timeout,
+  TP_ARGS(const origin_circuit_t *, circ),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id, circ->global_identifier)
+    ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+    ctf_enum(tor_circuit, state, int, state, TO_CIRCUIT(circ)->state)
   )
 )
 

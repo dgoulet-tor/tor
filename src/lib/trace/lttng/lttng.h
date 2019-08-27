@@ -65,6 +65,18 @@
 #define tor_trace_hs_client_store_desc(desc) \
   tracepoint(tor_hs_client, store_desc, (desc))
 
+#define tor_trace_hs_client_circ_timeout(circ) \
+  tracepoint(tor_hs_client, circ_timeout, (circ))
+
+/* HS Service Tracepoints. */
+
+#define tor_trace_hs_service_desc_cant_upload(reason, num_ips, upload_ts) \
+  tracepoint(tor_hs_service, desc_cant_upload, (reason), (num_ips), \
+             (upload_ts))
+
+#define tor_trace_hs_service_desc_upload(num_ips, upload_ts) \
+  tracepoint(tor_hs_service, desc_upload, (num_ips), (upload_ts))
+
 /* Circuit Tracepoints. */
 
 #define tor_trace_circuit_establish(circ) \
@@ -78,5 +90,8 @@
 
 #define tor_trace_circuit_idle_timeout(circ) \
   tracepoint(tor_circuit, idle_timeout, (circ))
+
+#define tor_trace_circuit_about_to_free_origin(circ) \
+  tracepoint(tor_circuit, about_to_free_origin, (circ))
 
 #endif /* !defined(TOR_TRACE_LTTNG_H) */

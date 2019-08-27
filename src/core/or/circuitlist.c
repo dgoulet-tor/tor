@@ -98,6 +98,7 @@
 #include "lib/compress/compress_zlib.h"
 #include "lib/compress/compress_zstd.h"
 #include "lib/buf/buffers.h"
+#include "lib/trace/events.h"
 
 #define OCIRC_EVENT_PRIVATE
 #include "core/or/ocirc_event.h"
@@ -2307,6 +2308,10 @@ circuit_about_to_free(circuit_t *circ)
 
   int reason = circ->marked_for_close_reason;
   int orig_reason = circ->marked_for_close_orig_reason;
+
+  if (CIRCUIT_IS_ORIGIN(circ)) {
+    tor_trace(circuit, about_to_free_origin, TO_ORIGIN_CIRCUIT(circ));
+  }
 
   if (circ->state == CIRCUIT_STATE_ONIONSKIN_PENDING) {
     onion_pending_remove(TO_OR_CIRCUIT(circ));

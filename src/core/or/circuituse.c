@@ -795,6 +795,7 @@ circuit_expire_building(void)
                  victim->state, circuit_state_to_string(victim->state),
                  victim->purpose);
         TO_ORIGIN_CIRCUIT(victim)->hs_circ_has_timed_out = 1;
+        tor_trace(hs_client, circ_timeout, TO_ORIGIN_CIRCUIT(victim));
         continue;
       default:
         break;

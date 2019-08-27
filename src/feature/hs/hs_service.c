@@ -32,6 +32,7 @@
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_rand.h"
 #include "lib/crypt_ops/crypto_util.h"
+#include "lib/trace/events.h"
 
 #include "feature/hs/hs_circuit.h"
 #include "feature/hs/hs_common.h"
@@ -3015,12 +3016,16 @@ should_service_upload_descriptor(const hs_service_t *service,
    * upload descriptor in this case. We need at least one for the service to
    * be reachable. */
   if (desc->missing_intro_points && num_intro_points == 0) {
+    tor_trace(hs_service, desc_cant_upload, 1, num_intro_points,
+              desc->next_upload_time);
     goto cannot;
   }
 
   /* Check if all our introduction circuit have been established for all the
    * intro points we have selected. */
   if (count_desc_circuit_established(desc) != num_intro_points) {
+    tor_trace(hs_service, desc_cant_upload, 2, num_intro_points,
+              desc->next_upload_time);
     goto cannot;
   }
 
@@ -3031,12 +3036,16 @@ should_service_upload_descriptor(const hs_service_t *service,
 
   /* Don't upload desc if we don't have a live consensus */
   if (!networkstatus_get_live_consensus(now)) {
+    tor_trace(hs_service, desc_cant_upload, 4, num_intro_points,
+              desc->next_upload_time);
     goto cannot;
   }
 
   /* Do we know enough router descriptors to have adequate vision of the HSDir
      hash ring? */
   if (!router_have_minimum_dir_info()) {
+    tor_trace(hs_service, desc_cant_upload, 5, num_intro_points,
+              desc->next_upload_time);
     goto cannot;
   }
 
@@ -3111,6 +3120,9 @@ run_upload_descriptor_event(time_t now)
                digest256map_size(desc->intro_points.map),
                service->config.num_intro_points,
                (desc->missing_intro_points) ? " (couldn't pick more)" : "");
+
+      tor_trace(hs_service, desc_upload, service->config.num_intro_points,
+                desc->next_upload_time);
 
       /* We are about to upload so we need to do one last step which is to
        * update the service's descriptor mutable fields in order to upload a

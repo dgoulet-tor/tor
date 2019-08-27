@@ -7,4 +7,5 @@ TRACEHEADERS += \
 	src/lib/trace/lttng/providers.h	\
 	src/lib/trace/lttng/providers_cells.h \
 	src/lib/trace/lttng/providers_circuit.h \
-	src/lib/trace/lttng/providers_hs.h
+	src/lib/trace/lttng/providers_hs_client.h \
+	src/lib/trace/lttng/providers_hs_service.h
