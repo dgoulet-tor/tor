@@ -2075,6 +2075,8 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
   const or_options_t *options = get_options();
   const node_t *node;
   hs_service_intro_point_t *ip = NULL;
+
+#if 1
   /* Normal 3-hop introduction point flags. */
   router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
   /* Single onion flags. */
@@ -2093,6 +2095,40 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
                                      flags);
   }
 
+#else
+  (void) direct_conn;
+
+  do {
+    static int pick_whatsgoingon = 0;
+    static int pick_essence = 0;
+    static int pick_madness = 0;
+    if (pick_whatsgoingon == 0) {
+      node = node_get_by_hex_id("27F3833453C4006DF1E21C6BF62E4FCD8E99DEF2", 0);
+      pick_whatsgoingon = 1;
+    } else if (pick_essence == 0) {
+      node = node_get_by_hex_id("5519D9ADEC80894D3FFD564B58AC425AEB38CDB3", 0);
+      pick_essence = 1;
+    } else if (pick_madness == 0) {
+      node = node_get_by_hex_id("381EC209A77FC5365B94CE219420BA01A6F0DA2E", 0);
+      pick_madness = 1;
+    } else {
+#if 0
+      /* Normal 3-hop introduction point flags. */
+      router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
+      /* Single onion flags. */
+      router_crn_flags_t direct_flags = flags | CRN_PREF_ADDR | CRN_DIRECT_CONN;
+
+      node = router_choose_random_node(exclude_nodes, get_options()->ExcludeNodes,
+                                       direct_conn ? direct_flags : flags);
+#endif
+      pick_madness = pick_essence = pick_whatsgoingon = 0;
+    }
+  } while (node == NULL);
+#endif
+
+  /* Unable to find a node. When looking for a node for a direct connection,
+   * we could try a 3-hop path instead. We'll add support for this in a later
+   * release. */
   if (!node) {
     goto err;
   }

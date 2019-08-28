@@ -800,6 +800,8 @@ intro_point_is_usable(const ed25519_public_key_t *service_pk,
   state = hs_cache_client_intro_state_find(service_pk,
                                            &ip->auth_key_cert->signed_key);
   if (state == NULL) {
+    log_warn(LD_REND, "No IP key in cache: %s",
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
     /* This means we've never encountered any problem thus usable. */
     goto usable;
   }
@@ -818,6 +820,9 @@ intro_point_is_usable(const ed25519_public_key_t *service_pk,
              safe_str_client(ed25519_fmt(&ip->auth_key_cert->signed_key)));
     goto not_usable;
   }
+
+  log_warn(LD_REND, "IP key in cache is usable: %s",
+           ed25519_fmt(&ip->auth_key_cert->signed_key));
 
  usable:
   return 1;
@@ -860,6 +865,14 @@ client_get_random_intro(const ed25519_public_key_t *service_pk)
   enc_data = &desc->encrypted_data;
   usable_ips = smartlist_new();
   smartlist_add_all(usable_ips, enc_data->intro_points);
+  SMARTLIST_FOREACH_BEGIN(enc_data->intro_points,
+                          const hs_desc_intro_point_t *, ip) {
+    ei = desc_intro_point_to_extend_info(ip);
+    log_warn(LD_REND, "(From encrypted data) IP: %s [%s]",
+             extend_info_describe(ei),
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
+    extend_info_free(ei);
+  } SMARTLIST_FOREACH_END(ip);
   while (smartlist_len(usable_ips) != 0) {
     int idx;
     const hs_desc_intro_point_t *ip;
@@ -870,11 +883,17 @@ client_get_random_intro(const ed25519_public_key_t *service_pk)
     ip = smartlist_get(usable_ips, idx);
     smartlist_del(usable_ips, idx);
 
+    log_warn(LD_REND, "Remaining IPs: %d. Removing idx: %d (ip: %s)",
+             smartlist_len(usable_ips), idx,
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
+
     /* We need to make sure we have a usable intro points which is in a good
      * state in our cache. */
     if (!intro_point_is_usable(service_pk, ip)) {
       continue;
     }
+    log_warn(LD_REND, "IP Picked: %s",
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
 
     /* Generate an extend info object from the intro point object. */
     ei = desc_intro_point_to_extend_info(ip);
@@ -887,6 +906,8 @@ client_get_random_intro(const ed25519_public_key_t *service_pk)
                safe_str_client(onion_address));
       continue;
     }
+
+    log_warn(LD_REND, "Picked EI: %s", extend_info_describe(ei));
 
     /* Test the pick against ExcludeNodes. */
     if (routerset_contains_extendinfo(options->ExcludeNodes, ei)) {
@@ -1041,8 +1062,9 @@ handle_introduce_ack_bad(origin_circuit_t *circ, int status)
 {
   tor_assert(circ);
 
-  log_info(LD_REND, "Received INTRODUCE_ACK nack by %s. Reason: %u",
+  log_info(LD_REND, "Received INTRODUCE_ACK nack by %s [%s]. Reason: %u",
       safe_str_client(extend_info_describe(circ->build_state->chosen_exit)),
+      ed25519_fmt(&circ->hs_ident->intro_auth_pk),
       status);
 
   /* It's a NAK. The introduction point didn't relay our request. */
@@ -1333,6 +1355,14 @@ hs_client_any_intro_points_usable(const ed25519_public_key_t *service_pk,
 
   SMARTLIST_FOREACH_BEGIN(desc->encrypted_data.intro_points,
                           const hs_desc_intro_point_t *, ip) {
+    log_warn(LD_REND, "Before testing: IP - %s",
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
+  } SMARTLIST_FOREACH_END(ip);
+
+  SMARTLIST_FOREACH_BEGIN(desc->encrypted_data.intro_points,
+                          const hs_desc_intro_point_t *, ip) {
+    log_warn(LD_REND, "Testing IP: %s",
+             ed25519_fmt(&ip->auth_key_cert->signed_key));
     if (intro_point_is_usable(service_pk, ip)) {
       goto usable;
     }
