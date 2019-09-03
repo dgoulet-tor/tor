@@ -64,6 +64,7 @@ TRACEPOINT_ENUM(tor_circuit, purpose,
 
 TRACEPOINT_ENUM(tor_circuit, end_reason,
   TP_ENUM_VALUES(
+    /* Local reasons. */
     ctf_enum_value("IP_NOW_REDUNDANT", END_CIRC_REASON_IP_NOW_REDUNDANT)
     ctf_enum_value("MEASUREMENT_EXPIRED", END_CIRC_REASON_MEASUREMENT_EXPIRED)
     ctf_enum_value("REASON_NOPATH", END_CIRC_REASON_NOPATH)
@@ -81,7 +82,33 @@ TRACEPOINT_ENUM(tor_circuit, end_reason,
     ctf_enum_value("TIMEOUT", END_CIRC_REASON_TIMEOUT)
     ctf_enum_value("DESTROYED", END_CIRC_REASON_DESTROYED)
     ctf_enum_value("NOSUCHSERVICE", END_CIRC_REASON_NOSUCHSERVICE)
+
+    /* Remote reasons. */
     ctf_enum_value("FLAG_REMOTE", END_CIRC_REASON_FLAG_REMOTE)
+    ctf_enum_value("REMOTE_TORPROTOCOL",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_TORPROTOCOL)
+    ctf_enum_value("REMOTE_INTERNAL",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_INTERNAL)
+    ctf_enum_value("REMOTE_REQUESTED",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_REQUESTED)
+    ctf_enum_value("REMOTE_HIBERNATING",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_HIBERNATING)
+    ctf_enum_value("REMOTE_RESOURCELIMIT",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_RESOURCELIMIT)
+    ctf_enum_value("REMOTE_CONNECTFAILED",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_CONNECTFAILED)
+    ctf_enum_value("REMOTE_OR_IDENTITY",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_OR_IDENTITY)
+    ctf_enum_value("REMOTE_CHANNEL_CLOSED",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_CHANNEL_CLOSED)
+    ctf_enum_value("REMOTE_FINISHED",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_FINISHED)
+    ctf_enum_value("REMOTE_TIMEOUT",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_TIMEOUT)
+    ctf_enum_value("REMOTE_DESTROYED",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_DESTROYED)
+    ctf_enum_value("REMOTE_NOSUCHSERVICE",
+                   END_CIRC_REASON_FLAG_REMOTE | END_CIRC_REASON_NOSUCHSERVICE)
   )
 )
 
