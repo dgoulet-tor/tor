@@ -1693,6 +1693,7 @@ void
 circuit_has_opened(origin_circuit_t *circ)
 {
   circuit_event_status(circ, CIRC_EVENT_BUILT, 0);
+  tor_trace(circuit, opened, circ);
 
   /* Remember that this circuit has finished building. Now if we start
    * it building again later (e.g. by extending it), we will know not
@@ -3073,6 +3074,8 @@ circuit_change_purpose(circuit_t *circ, uint8_t new_purpose)
   /* Don't allow an OR circ to become an origin circ or vice versa. */
   tor_assert(!!(CIRCUIT_IS_ORIGIN(circ)) ==
              !!(CIRCUIT_PURPOSE_IS_ORIGIN(new_purpose)));
+
+  tor_trace(circuit, change_purpose, circ, circ->purpose, new_purpose);
 
   if (circ->purpose == new_purpose) return;
 

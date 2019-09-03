@@ -1006,6 +1006,7 @@ circuit_send_first_onion_skin(origin_circuit_t *circ)
     cc.handshake_type = ONION_HANDSHAKE_TYPE_FAST;
   }
 
+  tor_trace(circuit, first_onion_skin, circ, circ->cpath);
   len = onion_skin_create(cc.handshake_type,
                           circ->cpath->extend_info,
                           &circ->cpath->handshake_state,
@@ -1116,6 +1117,8 @@ circuit_send_intermediate_onion_skin(origin_circuit_t *circ,
   memset(&ec, 0, sizeof(ec));
 
   log_debug(LD_CIRC,"starting to send subsequent skin.");
+
+  tor_trace(circuit, intermediate_onion_skin, circ, hop);
 
   if (tor_addr_family(&hop->extend_info->addr) != AF_INET) {
     log_warn(LD_BUG, "Trying to extend to a non-IPv4 address.");

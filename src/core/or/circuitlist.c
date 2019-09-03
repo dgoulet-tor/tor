@@ -541,6 +541,8 @@ void
 circuit_set_state(circuit_t *circ, uint8_t state)
 {
   tor_assert(circ);
+
+  tor_trace(circuit, change_state, circ, circ->state, state);
   if (state == circ->state)
     return;
   if (PREDICT_UNLIKELY(!circuits_pending_chans))

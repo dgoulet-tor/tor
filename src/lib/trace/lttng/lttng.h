@@ -94,4 +94,19 @@
 #define tor_trace_circuit_about_to_free_origin(circ) \
   tracepoint(tor_circuit, about_to_free_origin, (circ))
 
+#define tor_trace_circuit_change_purpose(circ, new, old) \
+  tracepoint(tor_circuit, change_purpose, (circ), (new), (old))
+
+#define tor_trace_circuit_change_state(circ, new, old) \
+  tracepoint(tor_circuit, change_state, (circ), (new), (old))
+
+#define tor_trace_circuit_first_onion_skin(circ, hop) \
+  tracepoint(tor_circuit, first_onion_skin, (circ), (hop))
+
+#define tor_trace_circuit_intermediate_onion_skin(circ, hop) \
+  tracepoint(tor_circuit, intermediate_onion_skin, (circ), (hop))
+
+#define tor_trace_circuit_opened(circ) \
+  tracepoint(tor_circuit, opened, (circ))
+
 #endif /* !defined(TOR_TRACE_LTTNG_H) */

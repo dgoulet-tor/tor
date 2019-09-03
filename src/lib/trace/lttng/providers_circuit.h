@@ -18,11 +18,17 @@
 #include <lttng/tracepoint.h>
 
 #include "core/or/circuitlist.h"
+#include "core/or/crypt_path_st.h"
+#include "core/or/extend_info_st.h"
 #include "core/or/or.h"
 #include "core/or/origin_circuit_st.h"
 
 TRACEPOINT_ENUM(tor_circuit, purpose,
   TP_ENUM_VALUES(
+
+    /* Initializing. */
+    ctf_enum_value("<UNSET>", 0)
+
     /* OR Side. */
     ctf_enum_value("OR", CIRCUIT_PURPOSE_OR)
     ctf_enum_value("OR_INTRO_POINT", CIRCUIT_PURPOSE_INTRO_POINT)
@@ -138,6 +144,14 @@ TRACEPOINT_EVENT(tor_circuit, cannibalized,
   )
 )
 
+TRACEPOINT_EVENT(tor_circuit, opened,
+  TP_ARGS(const origin_circuit_t *, circ),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id, circ->global_identifier)
+    ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+  )
+)
+
 TRACEPOINT_EVENT(tor_circuit, timeout,
   TP_ARGS(const origin_circuit_t *, circ, struct timeval *, tv),
   TP_FIELDS(
@@ -166,6 +180,52 @@ TRACEPOINT_EVENT(tor_circuit, about_to_free_origin,
              TO_CIRCUIT(circ)->marked_for_close_reason)
     ctf_enum(tor_circuit, end_reason, int, orig_close_reason,
              TO_CIRCUIT(circ)->marked_for_close_orig_reason)
+  )
+)
+
+TRACEPOINT_EVENT(tor_circuit, change_purpose,
+  TP_ARGS(const circuit_t *, circ, int, old_purpose, int, new_purpose),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id,
+                (CIRCUIT_IS_ORIGIN(circ) ?
+                 TO_ORIGIN_CIRCUIT(circ)->global_identifier : 0))
+    ctf_enum(tor_circuit, state, int, state, circ->state)
+    ctf_enum(tor_circuit, purpose, int, old, old_purpose)
+    ctf_enum(tor_circuit, purpose, int, new, new_purpose)
+  )
+)
+
+TRACEPOINT_EVENT(tor_circuit, change_state,
+  TP_ARGS(const circuit_t *, circ, int, old_state, int, new_state),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id,
+                (CIRCUIT_IS_ORIGIN(circ) ?
+                 TO_ORIGIN_CIRCUIT(circ)->global_identifier : 0))
+    ctf_enum(tor_circuit, purpose, int, purpose, circ->purpose)
+    ctf_enum(tor_circuit, state, int, old, old_state)
+    ctf_enum(tor_circuit, state, int, new, new_state)
+  )
+)
+
+TRACEPOINT_EVENT(tor_circuit, first_onion_skin,
+  TP_ARGS(const origin_circuit_t *, circ, const crypt_path_t *, hop),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id, circ->global_identifier)
+    ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+    ctf_enum(tor_circuit, state, int, state, TO_CIRCUIT(circ)->state)
+    ctf_array_hex(char, fingerprint, hop->extend_info->identity_digest,
+                  DIGEST_LEN)
+  )
+)
+
+TRACEPOINT_EVENT(tor_circuit, intermediate_onion_skin,
+  TP_ARGS(const origin_circuit_t *, circ, const crypt_path_t *, hop),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id, circ->global_identifier)
+    ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
+    ctf_enum(tor_circuit, state, int, state, TO_CIRCUIT(circ)->state)
+    ctf_array_hex(char, fingerprint, hop->extend_info->identity_digest,
+                  DIGEST_LEN)
   )
 )
 
