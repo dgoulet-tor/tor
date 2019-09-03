@@ -1962,8 +1962,6 @@ decode_intro_points(const hs_descriptor_t *desc,
     smartlist_add(desc_enc->intro_points, ip);
   } SMARTLIST_FOREACH_END(intro_point);
 
-  fprintf(stderr, "HERE: %d intro points\n", smartlist_len(desc_enc->intro_points));
-
  done:
   SMARTLIST_FOREACH(chunked_desc, char *, a, tor_free(a));
   smartlist_free(chunked_desc);
