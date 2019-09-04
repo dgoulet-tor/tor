@@ -142,14 +142,14 @@
   ((p)> CIRCUIT_PURPOSE_OR_MAX_ &&    \
    (p)<=CIRCUIT_PURPOSE_C_MAX_)
 /** True iff the circuit_t <b>c</b> is actually an origin_circuit_t. */
-#define CIRCUIT_IS_ORIGIN(c) (CIRCUIT_PURPOSE_IS_ORIGIN((c)->purpose))
+#define CIRCUIT_IS_ORIGIN(c) ((c)->magic == ORIGIN_CIRCUIT_MAGIC)
 /** True iff the circuit purpose <b>p</b> is for an established rendezvous
  * circuit. */
 #define CIRCUIT_PURPOSE_IS_ESTABLISHED_REND(p) \
   ((p) == CIRCUIT_PURPOSE_C_REND_JOINED ||     \
    (p) == CIRCUIT_PURPOSE_S_REND_JOINED)
 /** True iff the circuit_t c is actually an or_circuit_t */
-#define CIRCUIT_IS_ORCIRC(c) (((circuit_t *)(c))->magic == OR_CIRCUIT_MAGIC)
+#define CIRCUIT_IS_ORCIRC(c) ((c)->magic == OR_CIRCUIT_MAGIC)
 
 /** True iff this circuit purpose should count towards the global
  * pending rate limit (set by MaxClientCircuitsPending). We count all
