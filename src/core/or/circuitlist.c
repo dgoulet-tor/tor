@@ -2272,6 +2272,7 @@ circuit_mark_for_close_, (circuit_t *circ, int reason, int line,
            CIRCUIT_IS_ORIGIN(circ) ?
               TO_ORIGIN_CIRCUIT(circ)->global_identifier : 0,
            file, line, orig_reason, reason);
+  tor_trace(circuit, mark_for_close, circ);
 }
 
 /** Called immediately before freeing a marked circuit <b>circ</b> from

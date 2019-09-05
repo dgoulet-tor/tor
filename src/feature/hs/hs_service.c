@@ -3055,7 +3055,7 @@ should_service_upload_descriptor(const hs_service_t *service,
    * be reachable. */
   if (desc->missing_intro_points && num_intro_points == 0) {
     tor_trace(hs_service, desc_cant_upload, 1, num_intro_points,
-              desc->next_upload_time);
+              desc->next_upload_time, desc == service->desc_next);
     goto cannot;
   }
 
@@ -3063,7 +3063,7 @@ should_service_upload_descriptor(const hs_service_t *service,
    * intro points we have selected. */
   if (count_desc_circuit_established(desc) != num_intro_points) {
     tor_trace(hs_service, desc_cant_upload, 2, num_intro_points,
-              desc->next_upload_time);
+              desc->next_upload_time, desc == service->desc_next);
     goto cannot;
   }
 
@@ -3075,7 +3075,7 @@ should_service_upload_descriptor(const hs_service_t *service,
   /* Don't upload desc if we don't have a live consensus */
   if (!networkstatus_get_live_consensus(now)) {
     tor_trace(hs_service, desc_cant_upload, 4, num_intro_points,
-              desc->next_upload_time);
+              desc->next_upload_time, desc == service->desc_next);
     goto cannot;
   }
 
@@ -3083,7 +3083,7 @@ should_service_upload_descriptor(const hs_service_t *service,
      hash ring? */
   if (!router_have_minimum_dir_info()) {
     tor_trace(hs_service, desc_cant_upload, 5, num_intro_points,
-              desc->next_upload_time);
+              desc->next_upload_time, desc == service->desc_next);
     goto cannot;
   }
 
@@ -3160,7 +3160,7 @@ run_upload_descriptor_event(time_t now)
                (desc->missing_intro_points) ? " (couldn't pick more)" : "");
 
       tor_trace(hs_service, desc_upload, service->config.num_intro_points,
-                desc->next_upload_time);
+                desc->next_upload_time, desc == service->desc_next);
 
       /* We are about to upload so we need to do one last step which is to
        * update the service's descriptor mutable fields in order to upload a

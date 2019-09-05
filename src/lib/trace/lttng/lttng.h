@@ -70,12 +70,13 @@
 
 /* HS Service Tracepoints. */
 
-#define tor_trace_hs_service_desc_cant_upload(reason, num_ips, upload_ts) \
+#define tor_trace_hs_service_desc_cant_upload(reason, num_ips, upload_ts, \
+                                              is_next) \
   tracepoint(tor_hs_service, desc_cant_upload, (reason), (num_ips), \
-             (upload_ts))
+             (upload_ts), (is_next))
 
-#define tor_trace_hs_service_desc_upload(num_ips, upload_ts) \
-  tracepoint(tor_hs_service, desc_upload, (num_ips), (upload_ts))
+#define tor_trace_hs_service_desc_upload(num_ips, upload_ts, is_next) \
+  tracepoint(tor_hs_service, desc_upload, (num_ips), (upload_ts), (is_next))
 
 /* Circuit Tracepoints. */
 
@@ -108,5 +109,8 @@
 
 #define tor_trace_circuit_opened(circ) \
   tracepoint(tor_circuit, opened, (circ))
+
+#define tor_trace_circuit_mark_for_close(circ) \
+  tracepoint(tor_circuit, mark_for_close, (circ))
 
 #endif /* !defined(TOR_TRACE_LTTNG_H) */

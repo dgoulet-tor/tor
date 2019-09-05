@@ -229,6 +229,21 @@ TRACEPOINT_EVENT(tor_circuit, intermediate_onion_skin,
   )
 )
 
+TRACEPOINT_EVENT(tor_circuit, mark_for_close,
+  TP_ARGS(const circuit_t *, circ),
+  TP_FIELDS(
+    ctf_integer(uint32_t, circ_id,
+                (CIRCUIT_IS_ORIGIN(circ) ?
+                 TO_ORIGIN_CIRCUIT(circ)->global_identifier : 0))
+    ctf_enum(tor_circuit, purpose, int, purpose, circ->purpose)
+    ctf_enum(tor_circuit, state, int, state, circ->state)
+    ctf_enum(tor_circuit, end_reason, int, close_reason,
+             circ->marked_for_close_reason)
+    ctf_enum(tor_circuit, end_reason, int, orig_close_reason,
+             circ->marked_for_close_orig_reason)
+  )
+)
+
 #endif /* _TRACEPOINT_TOR_CIRCUIT_H */
 
 #include <lttng/tracepoint-event.h>

@@ -26,8 +26,9 @@ TRACEPOINT_ENUM(tor_hs_service, desc_cant_upload,
 )
 
 TRACEPOINT_EVENT(tor_hs_service, desc_cant_upload,
-  TP_ARGS(int, r, unsigned int, num_ips, time_t, upload_ts),
+  TP_ARGS(int, r, unsigned int, num_ips, time_t, upload_ts, bool, is_next),
   TP_FIELDS(
+    ctf_string(desc, (is_next) ? "NEXT" : "CURRENT")
     ctf_enum(tor_hs_service, desc_cant_upload, int, reason, r)
     ctf_integer(unsigned int, num_ips, num_ips)
     ctf_integer(time_t, next_upload_time, upload_ts)
@@ -35,8 +36,9 @@ TRACEPOINT_EVENT(tor_hs_service, desc_cant_upload,
 )
 
 TRACEPOINT_EVENT(tor_hs_service, desc_upload,
-  TP_ARGS(unsigned int, num_ips, time_t, upload_ts),
+  TP_ARGS(unsigned int, num_ips, time_t, upload_ts, bool, is_next),
   TP_FIELDS(
+    ctf_string(desc, (is_next) ? "NEXT" : "CURRENT")
     ctf_integer(unsigned int, num_ips, num_ips)
     ctf_integer(time_t, next_upload_time, upload_ts)
   )
