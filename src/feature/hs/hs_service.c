@@ -2076,7 +2076,7 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
   const node_t *node;
   hs_service_intro_point_t *ip = NULL;
 
-#if 1
+#if 0
   /* Normal 3-hop introduction point flags. */
   router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
   /* Single onion flags. */
@@ -2096,6 +2096,31 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
   }
 
 #else
+  static int pick_whatsgoingon = 0;
+  if (pick_whatsgoingon == 0) {
+    node = node_get_by_hex_id("27F3833453C4006DF1E21C6BF62E4FCD8E99DEF2", 0);
+    pick_whatsgoingon = 1;
+  } else {
+    /* Normal 3-hop introduction point flags. */
+    router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
+    /* Single onion flags. */
+    router_crn_flags_t direct_flags = flags | CRN_PREF_ADDR | CRN_DIRECT_CONN;
+
+    node = router_choose_random_node(exclude_nodes, options->ExcludeNodes,
+                                     direct_conn ? direct_flags : flags);
+
+    /* If we are in single onion mode, retry node selection for a 3-hop
+     * path */
+    if (direct_conn && !node) {
+      log_info(LD_REND,
+               "Unable to find an intro point that we can connect to "
+               "directly, falling back to a 3-hop path.");
+      node = router_choose_random_node(exclude_nodes, options->ExcludeNodes,
+                                       flags);
+    }
+  }
+
+#if 0
   (void) direct_conn;
 
   do {
@@ -2112,20 +2137,10 @@ pick_intro_point(unsigned int direct_conn, smartlist_t *exclude_nodes)
       node = node_get_by_hex_id("381EC209A77FC5365B94CE219420BA01A6F0DA2E", 0);
       pick_madness = 1;
     } else {
-#if 0
-      /* Normal 3-hop introduction point flags. */
-      router_crn_flags_t flags = CRN_NEED_UPTIME | CRN_NEED_DESC;
-      /* Single onion flags. */
-      router_crn_flags_t direct_flags =
-        flags | CRN_PREF_ADDR | CRN_DIRECT_CONN;
-
-      node = router_choose_random_node(exclude_nodes,
-                                       get_options()->ExcludeNodes,
-                                       direct_conn ? direct_flags : flags);
-#endif
       pick_madness = pick_essence = pick_whatsgoingon = 0;
     }
   } while (node == NULL);
+#endif
 #endif
 
   /* Unable to find a node. When looking for a node for a direct connection,
