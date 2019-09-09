@@ -366,6 +366,7 @@ get_intro_point_num_extra(void)
 {
   /* The [0, 128] range bounds the number of extra introduction point allowed.
    * Above 128 intro points, it's getting a bit crazy. */
+  return 0;
   return networkstatus_get_param(NULL, "hs_intro_num_extra",
                                  NUM_INTRO_POINTS_EXTRA, 0, 128);
 }

@@ -31,20 +31,13 @@ TRACEPOINT_ENUM(tor_hs_client, intro_ack_status,
   )
 )
 
-TRACEPOINT_EVENT(tor_hs_client, launch_circ,
-  TP_ARGS(const origin_circuit_t *, circ),
-  TP_FIELDS(
-    ctf_integer(uint32_t, circ_id, circ->global_identifier)
-  )
-)
-
 TRACEPOINT_EVENT(tor_hs_client, intro_opened,
   TP_ARGS(const origin_circuit_t *, circ),
   TP_FIELDS(
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_enum(tor_circuit, purpose, int, purpose, TO_CIRCUIT(circ)->purpose)
     ctf_array_hex(char, hs_ident_pk,
-                   circ->hs_ident->identity_pk.pubkey, 4)
+                  circ->hs_ident->identity_pk.pubkey, ED25519_PUBKEY_LEN)
   )
 )
 
@@ -54,7 +47,7 @@ TRACEPOINT_EVENT(tor_hs_client, intro_established,
     ctf_enum(tor_hs_client, intro_ack_status, unsigned int, status, status)
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_array_hex(char, hs_ident_pk,
-                   circ->hs_ident->identity_pk.pubkey, 4)
+                  circ->hs_ident->identity_pk.pubkey, ED25519_PUBKEY_LEN)
   )
 )
 
@@ -63,9 +56,9 @@ TRACEPOINT_EVENT(tor_hs_client, rendezvous_opened,
   TP_FIELDS(
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_array_hex(char, hs_ident_pk,
-                   circ->hs_ident->identity_pk.pubkey, 4)
+                  circ->hs_ident->identity_pk.pubkey, ED25519_PUBKEY_LEN)
     ctf_array_hex(char, rdv_cookie,
-                   circ->hs_ident->rendezvous_cookie, 4)
+                  circ->hs_ident->rendezvous_cookie, HS_REND_COOKIE_LEN)
   )
 )
 
@@ -74,9 +67,9 @@ TRACEPOINT_EVENT(tor_hs_client, rendezvous_established,
   TP_FIELDS(
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_array_hex(char, hs_ident_pk,
-                   circ->hs_ident->identity_pk.pubkey, 4)
+                  circ->hs_ident->identity_pk.pubkey, ED25519_PUBKEY_LEN)
     ctf_array_hex(char, rdv_cookie,
-                   circ->hs_ident->rendezvous_cookie, 4)
+                  circ->hs_ident->rendezvous_cookie, HS_REND_COOKIE_LEN)
   )
 )
 
@@ -85,16 +78,16 @@ TRACEPOINT_EVENT(tor_hs_client, rendezvous2,
   TP_FIELDS(
     ctf_integer(uint32_t, circ_id, circ->global_identifier)
     ctf_array_hex(char, hs_ident_pk,
-                   circ->hs_ident->identity_pk.pubkey, 4)
+                  circ->hs_ident->identity_pk.pubkey, ED25519_PUBKEY_LEN)
     ctf_array_hex(char, rdv_cookie,
-                   circ->hs_ident->rendezvous_cookie, 4)
+                  circ->hs_ident->rendezvous_cookie, HS_REND_COOKIE_LEN)
   )
 )
 
 TRACEPOINT_EVENT(tor_hs_client, store_desc,
   TP_ARGS(const ed25519_public_key_t *, pk),
   TP_FIELDS(
-    ctf_array_hex(char, hs_ident_pk, pk->pubkey, 4)
+    ctf_array_hex(char, hs_ident_pk, pk->pubkey, ED25519_PUBKEY_LEN)
   )
 )
 

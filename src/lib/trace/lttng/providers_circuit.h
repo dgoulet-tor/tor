@@ -190,7 +190,7 @@ TRACEPOINT_EVENT(tor_circuit, change_purpose,
                 (CIRCUIT_IS_ORIGIN(circ) ?
                  TO_ORIGIN_CIRCUIT(circ)->global_identifier : 0))
     ctf_enum(tor_circuit, state, int, state, circ->state)
-    ctf_enum(tor_circuit, purpose, int, old, old_purpose)
+    ctf_enum(tor_circuit, purpose, int, purpose, old_purpose)
     ctf_enum(tor_circuit, purpose, int, new, new_purpose)
   )
 )

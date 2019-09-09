@@ -44,9 +44,6 @@
 
 /* HS Client Tracepoints. */
 
-#define tor_trace_hs_client_launch_circ(circ) \
-  tracepoint(tor_hs_client, launch_circ, (circ))
-
 #define tor_trace_hs_client_intro_opened(circ) \
   tracepoint(tor_hs_client, intro_opened, (circ))
 
