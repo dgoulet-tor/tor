@@ -37,6 +37,8 @@ details-*.json
 uptime-*.json
 *.full_url
 *.last_modified
+# ccls file that can be per directory.
+*.ccls
 
 # /
 /Makefile
