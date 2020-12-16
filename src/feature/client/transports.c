@@ -381,7 +381,7 @@ managed_proxy_has_transport(const char *transport_name)
 
   SMARTLIST_FOREACH_BEGIN(managed_proxy_list, const managed_proxy_t *, mp) {
     SMARTLIST_FOREACH_BEGIN(mp->transports_to_launch, const char *, name) {
-      if (!strcmp(name, transport_name)) {
+      if (!strcasecmp(name, transport_name)) {
         return true;
       }
     } SMARTLIST_FOREACH_END(name);
