@@ -725,3 +725,13 @@ show-libs:
 
 show-testing-libs:
 	@echo src/test/libtor-testing.a
+
+# Note here that we hardcode this -j2 because if the user would pass too many
+# cores, bear actually chockes and dies :S.
+lsp:
+	@if test -x "`which bear 2>&1;true`"; then \
+		echo "Generating LSP compile_commands.json. Might take few minutes..."; \
+		bear >/dev/null 2>&1 -- $(MAKE) -j2 2>&1 >/dev/null; \
+	else \
+		echo "No bear command found. On debian, apt install bear"; \
+	fi

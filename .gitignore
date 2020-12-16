@@ -74,6 +74,7 @@ uptime-*.json
 /Tor*Bundle.dmg
 /tor-*-win32.exe
 /warning_flags
+/compile_commands.json
 
 /coverage_html/
 /callgraph/
