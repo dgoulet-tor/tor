@@ -3144,6 +3144,12 @@ router_dump_exit_policy_to_string(const routerinfo_t *router,
  * hours in the past or more than 1 hour in the future with respect to
  * <b>now</b>, and write the entire file contents into <b>out</b>.
  *
+ * The timestamp expected should be an ISO-formatted UTC time value which is
+ * parsed using our parse_iso_time() function.
+ *
+ * In case more than one tag are found in the file, the very first one is
+ * used.
+ *
  * Return 1 for success, 0 if the file does not exist or is empty, or -1 if
  * the file does not contain a line with the timestamp tag. */
 STATIC int
