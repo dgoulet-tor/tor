@@ -3186,7 +3186,8 @@ load_stats_file(const char *filename, const char *ts_tag, time_t now,
       goto end;
     }
     /* Success. Put in the entire content. */
-    *out = tor_strdup(contents);
+    *out = contents;
+    contents = NULL; /* Must not free it. */
     r = 1;
     break;
   /* treat empty stats files as if the file doesn't exist */
