@@ -3139,7 +3139,7 @@ router_dump_exit_policy_to_string(const routerinfo_t *router,
                                include_ipv6);
 }
 
-/** Load the contents of <b>filename</b>, find the line containing the
+/** Load the contents of <b>filename</b>, find a line starting with
  * timestamp tag <b>ts_tag</b>, ensure that its timestamp is not more than 25
  * hours in the past or more than 1 hour in the future with respect to
  * <b>now</b>, and write the entire file contents into <b>out</b>.
@@ -3170,7 +3170,7 @@ load_stats_file(const char *filename, const char *ts_tag, time_t now,
     }
     /* Find the timestamp tag to validate that the file is not too old or if
      * exists. */
-    const char *ts_tok = strstr(contents, ts_tag);
+    const char *ts_tok = find_str_at_start_of_line(contents, ts_tag);
     if (!ts_tok) {
       log_warn(LD_BUG, "Token %s not found in file %s", ts_tag, filename);
       goto end;
