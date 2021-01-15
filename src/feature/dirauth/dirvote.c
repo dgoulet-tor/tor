@@ -26,6 +26,7 @@
 #include "feature/dirparse/parsecommon.h"
 #include "feature/dirparse/signing.h"
 #include "feature/nodelist/authcert.h"
+#include "feature/nodelist/describe.h"
 #include "feature/nodelist/dirlist.h"
 #include "feature/nodelist/fmt_routerstatus.h"
 #include "feature/nodelist/microdesc.h"
@@ -4358,6 +4359,8 @@ get_sybil_list_by_ip_version(const smartlist_t *routers, sa_family_t family)
       addr_count = 1;
     } else if (++addr_count > max_with_same_addr) {
       digestmap_set(omit_as_sybil, ri->cache_info.identity_digest, ri);
+      log_info(LD_DIRSERV, "Adding %s as sybil when looking at IPv%d",
+               router_describe(ri), ((family == AF_INET) ? 4 : 6));
     }
   } SMARTLIST_FOREACH_END(ri);
   smartlist_free(routers_by_ip);
@@ -4539,6 +4542,8 @@ clear_status_flags_on_sybil(routerstatus_t *rs)
   /* FFFF we might want some mechanism to check later on if we
    * missed zeroing any flags: it's easy to add a new flag but
    * forget to add it to this clause. */
+  log_info(LD_DIRSERV, "Considered a sybil, clearing flags: %s",
+           routerstatus_describe(rs));
 }
 
 /** Space-separated list of all the flags that we will always vote on. */
