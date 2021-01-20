@@ -460,6 +460,8 @@ directory_handle_command_get,(dir_connection_t *conn, const char *headers,
       match = !strcmp(url, url_table[i].string);
     }
     if (match) {
+      log_warn(LD_DIRSERV, "Dir request: %s (calling: %s). Compression: %u",
+               args.url, url_table[i].string, args.compression_supported);
       result = url_table[i].handler(conn, &args);
       goto done;
     }
