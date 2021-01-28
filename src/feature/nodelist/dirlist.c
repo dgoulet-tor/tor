@@ -59,9 +59,10 @@ add_trusted_dir_to_nodelist_addr_set(const dir_server_t *dir)
   tor_assert(dir->is_authority);
 
   /* Add IPv4 and then IPv6 if applicable. */
-  nodelist_add_addr_to_address_set(&dir->ipv4_addr);
+  nodelist_add_addr_to_address_set(&dir->ipv4_addr, dir->ipv4_orport,
+                                   dir->ipv4_dirport);
   if (!tor_addr_is_null(&dir->ipv6_addr)) {
-    nodelist_add_addr_to_address_set(&dir->ipv6_addr);
+    nodelist_add_addr_to_address_set(&dir->ipv6_addr, dir->ipv6_orport, 0);
   }
 }
 

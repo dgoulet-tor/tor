@@ -1159,6 +1159,18 @@ tor_addr_keyed_hash(const struct sipkey *key, const tor_addr_t *addr)
   }
 }
 
+/** Combine the addr and port into a single stream of data to siphash24 using
+ * the given key. */
+uint64_t
+tor_addr_port_keyed_hash(const struct sipkey *key, const tor_addr_t *addr,
+                         uint16_t port)
+{
+  uint8_t data[sizeof(tor_addr_t) + sizeof(port)] = {0};
+  memcpy(data, addr, sizeof(tor_addr_t));
+  memcpy(data + sizeof(tor_addr_t), &port, sizeof(port));
+  return siphash24(data, sizeof(data), key);
+}
+
 /** Return a newly allocated string with a representation of <b>addr</b>. */
 char *
 tor_addr_to_str_dup(const tor_addr_t *addr)
